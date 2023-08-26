@@ -1,8 +1,10 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import com.bmuschko.gradle.docker.tasks.image.*
 
 plugins {
     id("org.springframework.boot") version "3.1.2"
     id("io.spring.dependency-management") version "1.1.2"
+    id("com.bmuschko.docker-remote-api") version "6.7.0"
     kotlin("jvm") version "1.8.22"
     kotlin("plugin.spring") version "1.8.22"
 }
@@ -51,4 +53,20 @@ tasks.withType<KotlinCompile> {
 
 tasks.withType<Test> {
     useJUnitPlatform()
+}
+
+
+val createDockerfile by tasks.creating(Dockerfile::class) {
+    from("eclipse-temurin:17")
+    copyFile("libs/foodradar-$version.jar", "/app/foodradar.jar")
+    entryPoint("java")
+    defaultCommand("-jar", "/app/foodradar.jar")
+    exposePort(8080)
+}
+
+tasks.create("buildImage", DockerBuildImage::class) {
+    dependsOn(createDockerfile)
+    images.add("foodradar:latest")
+    inputDir = file(project.buildDir)
+    dockerFile = file("${project.buildDir}/docker/Dockerfile")
 }
