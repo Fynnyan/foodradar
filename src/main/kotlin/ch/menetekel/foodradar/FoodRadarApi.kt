@@ -1,12 +1,10 @@
 package ch.menetekel.foodradar
 
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
-import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import reactor.core.publisher.Flux
+import reactor.core.publisher.Mono
 
 @RestController
 @RequestMapping("/api/food-radar")
@@ -15,11 +13,11 @@ class FoodRadarApi(
 ) {
 
     @GetMapping("/dreiganger")
-    fun getDreigaengerMenu(): Flux<Menu> =
+    fun getDreigaengerMenu(): Mono<Place> =
         dataCollectors.fetchDreigaengerMenu()
 
     @GetMapping("/schichtwechsel")
-    fun getSchichtwechselMenu(): Flux<Menu> =
+    fun getSchichtwechselMenu(): Mono<Place> =
         dataCollectors.fetchSchichtWechselMenu()
 
     @GetMapping("/le-beizli")
