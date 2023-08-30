@@ -9,13 +9,13 @@ function App() {
     const [schicht, setSchicht] = useState<Place>()
 
     useEffect(() => {
-        fetch('http://localhost:8080/api/food-radar/dreiganger')
+        fetch('/api/food-radar/dreiganger')
             .then((response) => response.json() as Promise<Place>)
             .then((place) => { setDrei(place) })
     })
 
     useEffect(() => {
-        fetch('http://localhost:8080/api/food-radar/schichtwechsel')
+        fetch('/api/food-radar/schichtwechsel')
             .then((response) => response.json() as Promise<Place>)
             .then((place) => { setSchicht(place) })
     })

@@ -25,6 +25,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test"
   },
+  "proxy": "http://localhost:8080",
   "eslintConfig": {
     "extends": [
       "react-app",
