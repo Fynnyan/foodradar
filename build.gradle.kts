@@ -1,10 +1,13 @@
+import com.bmuschko.gradle.docker.tasks.image.DockerBuildImage
+import com.bmuschko.gradle.docker.tasks.image.Dockerfile
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import com.bmuschko.gradle.docker.tasks.image.*
+import org.jooq.meta.jaxb.Property
 
 plugins {
     id("org.springframework.boot") version "3.1.2"
     id("io.spring.dependency-management") version "1.1.2"
     id("com.bmuschko.docker-remote-api") version "6.7.0"
+    id("nu.studer.jooq") version "8.2"
     kotlin("jvm") version "1.8.22"
     kotlin("plugin.spring") version "1.8.22"
 }
@@ -42,7 +45,45 @@ dependencies {
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("io.projectreactor:reactor-test")
+
+    jooqGenerator("org.jooq:jooq-meta-extensions:${jooq.version}")
 }
+
+jooq {
+    configurations {
+        create("main") {
+            jooqConfiguration.apply {
+                generator.apply {
+                    name = "org.jooq.codegen.KotlinGenerator"
+                    database.apply {
+                        name =  "org.jooq.meta.extensions.ddl.DDLDatabase"
+                        properties.apply {
+                            // https://www.jooq.org/doc/latest/manual/code-generation/codegen-ddl/
+                            add(Property().apply {
+                                key = "scripts"
+                                value = "src/main/resources/db/migration/V001__init.sql"
+                            })
+                            add(Property().apply {
+                                key = "unqualifiedSchema"
+                                value = "public"
+                            })
+                        }
+                    }
+                    target.apply {
+                        packageName = "ch.menetekel.foodradar.jooq"
+                        directory = "${project.buildDir}/generated/jooq"
+                    }
+                    strategy.name = "org.jooq.codegen.DefaultGeneratorStrategy"
+                }
+            }
+        }
+    }
+}
+
+tasks.named<nu.studer.gradle.jooq.JooqGenerate>("generateJooq") {
+    allInputsDeclared.set(true)
+}
+
 
 tasks.withType<KotlinCompile> {
     kotlinOptions {
@@ -65,7 +106,7 @@ tasks.register<Copy>("copyJarForBuild") {
 tasks.register<Copy>("copyFrontendForBuild") {
     group = "docker"
     dependsOn(":frontend:npmBuild")
-    from(layout.projectDirectory.dir("frontend/build"),)
+    from(layout.projectDirectory.dir("frontend/build"))
     into(layout.buildDirectory.dir("docker/static-files"))
 }
 
