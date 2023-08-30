@@ -1,1 +1,3 @@
-rootProject.name = "foodradar"
+rootProject.name = "food-radar"
+
+include("frontend")

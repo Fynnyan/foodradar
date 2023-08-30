@@ -9,8 +9,8 @@ plugins {
     kotlin("plugin.spring") version "1.8.22"
 }
 
-group = "com.example"
-version = "0.0.1-SNAPSHOT"
+group = "ch.menetekel"
+version = "1.0.0"
 
 java {
     sourceCompatibility = JavaVersion.VERSION_17
@@ -55,18 +55,41 @@ tasks.withType<Test> {
     useJUnitPlatform()
 }
 
+tasks.register<Copy>("copyJarForBuild") {
+    group = "docker"
+    dependsOn(tasks.bootJar)
+    from(layout.buildDirectory.file("libs/food-radar-$version.jar"))
+    into(layout.buildDirectory.dir("docker"))
+}
+
+tasks.register<Copy>("copyFrontendForBuild") {
+    group = "docker"
+    dependsOn(":frontend:npmBuild")
+    val feBuild = "frontend/build"
+    from(
+        layout.projectDirectory.dir("$feBuild/static"),
+        layout.projectDirectory.dir("$feBuild/asset-manifest.json"),
+        layout.projectDirectory.dir("$feBuild/index.html"),
+        layout.projectDirectory.dir("$feBuild/robots.txt")
+
+    )
+    into(layout.buildDirectory.dir("docker/static"))
+}
 
 val createDockerfile by tasks.creating(Dockerfile::class) {
+    group = "docker"
     from("eclipse-temurin:17")
-    copyFile("libs/foodradar-$version.jar", "/app/foodradar.jar")
+    copyFile("food-radar-$version.jar", "/app/food-radar.jar")
+    copyFile("static", "/app/static")
     entryPoint("java")
-    defaultCommand("-jar", "/app/foodradar.jar")
+    defaultCommand("-jar", "/app/food-radar.jar")
     exposePort(8080)
 }
 
-tasks.create("buildImage", DockerBuildImage::class) {
-    dependsOn(createDockerfile)
-    images.add("foodradar:latest")
-    inputDir = file(project.buildDir)
+val buildImage by tasks.creating(DockerBuildImage::class) {
+    group = "docker"
+    dependsOn(createDockerfile, "copyJarForBuild", "copyFrontendForBuild")
+    images.add("food-radar:$version")
+    inputDir = file("${project.buildDir}/docker")
     dockerFile = file("${project.buildDir}/docker/Dockerfile")
 }
