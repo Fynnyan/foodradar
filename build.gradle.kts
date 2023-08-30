@@ -65,22 +65,15 @@ tasks.register<Copy>("copyJarForBuild") {
 tasks.register<Copy>("copyFrontendForBuild") {
     group = "docker"
     dependsOn(":frontend:npmBuild")
-    val feBuild = "frontend/build"
-    from(
-        layout.projectDirectory.dir("$feBuild/static"),
-        layout.projectDirectory.dir("$feBuild/asset-manifest.json"),
-        layout.projectDirectory.dir("$feBuild/index.html"),
-        layout.projectDirectory.dir("$feBuild/robots.txt")
-
-    )
-    into(layout.buildDirectory.dir("docker/static"))
+    from(layout.projectDirectory.dir("frontend/build"),)
+    into(layout.buildDirectory.dir("docker/static-files"))
 }
 
 val createDockerfile by tasks.creating(Dockerfile::class) {
     group = "docker"
     from("eclipse-temurin:17")
     copyFile("food-radar-$version.jar", "/app/food-radar.jar")
-    copyFile("static", "/app/static")
+    copyFile("static-files", "/app/static-files")
     entryPoint("java")
     defaultCommand("-jar", "/app/food-radar.jar")
     exposePort(8080)
