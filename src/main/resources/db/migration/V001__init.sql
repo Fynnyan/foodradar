@@ -18,8 +18,9 @@ create table place
 
 create table course
 (
-    id    uuid primary key,
-    date  date,
-    name  varchar(100),
-    price varchar(100)
+    id       uuid primary key,
+    place_id uuid references place,
+    date     date,
+    name     varchar(100),
+    price    varchar(100)
 );

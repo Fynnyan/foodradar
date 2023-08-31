@@ -6,6 +6,9 @@ import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Mono
 import reactor.kotlin.core.publisher.toMono
+import java.time.DayOfWeek
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 @Service
 class DataCollectors(
@@ -43,7 +46,13 @@ class DataCollectors(
                             it.classNames().contains("menu_price") -> prices.add(it.text())
                         }
                     }
-                    Menu(date, courses.mapIndexed { i, e -> Course(e, prices.getOrNull(i)) })
+                    Menu(
+                        LocalDate.parse(
+                            date.split(",")[1].trim(),
+                            DateTimeFormatter.ofPattern("dd.MM.yyyy")
+                        ),
+                        courses.mapIndexed { i, e -> Course(e, prices.getOrNull(i)) }
+                    )
                 }
                 ?.let { Place.from(placesConfig.dreigaenger, it, ProcessingStatus.PROCESSED).toMono() }
                 ?: throw Exception("Did not find the specified elements to process")
@@ -60,21 +69,31 @@ class DataCollectors(
         return try {
             page.selectFirst(".rmc-menu > ul")
                 ?.children()
-                ?.map {
+                ?.map men@{
                     val dateAndText = it.selectFirst("p")
                         ?.text()
                         ?.split(":")
                         ?: throw Exception("could not parse list and split text")
-                    Menu(
-                        date = dateAndText.getOrNull(0) ?: "",
-                        courses = listOf(
-                            Course(
-                                name = dateAndText.getOrNull(1) ?: "",
-                                price = null
+
+                    val day = dateAndText.getOrNull(0)?.lowercase()
+
+                    // skip the daily soup and salat entry
+                    if (day != "täglich") {
+                        val calcDate = getDateRelativeOfGermanDayForCurrentWeek(day ?: "")
+                            ?: throw Exception("Could not parse and calculate date from the $day text")
+
+                        Menu(
+                            date = calcDate,
+                            courses = listOf(
+                                Course(
+                                    name = dateAndText.getOrNull(1)?.trim() ?: "",
+                                    price = null
+                                )
                             )
                         )
-                    )
+                    } else null
                 }
+                ?.filterNotNull()
                 ?.let { Place.from(placesConfig.schichtwechsel, it, ProcessingStatus.PROCESSED).toMono() }
                 ?: throw Exception("Did not find the specified elements to process")
         } catch (e: Exception) {
@@ -90,6 +109,23 @@ class DataCollectors(
     private fun logAndReturnProcessingFailure(config: PlacesConfig.PlacesMetaData, exception: Exception?): Mono<Place> {
         log.error("Could process the page of ${config.scrapeAddress}", exception)
         return Place.from(config, emptyList(), ProcessingStatus.PROCESS_ERROR).toMono()
+    }
+
+
+    fun getDateRelativeOfGermanDayForCurrentWeek(germanDay: String): LocalDate? {
+        val dayOfWeek = when (germanDay.lowercase()) {
+            "montag" -> DayOfWeek.MONDAY
+            "dienstag" -> DayOfWeek.TUESDAY
+            "mittwoch" -> DayOfWeek.WEDNESDAY
+            "donnerstag" -> DayOfWeek.THURSDAY
+            "freitag" -> DayOfWeek.FRIDAY
+            else -> return null
+        }
+
+        val now = LocalDate.now()
+        val currentDay = now.dayOfWeek
+        val op = dayOfWeek.value - currentDay.value
+        return now.plusDays(op.toLong())
     }
 
     companion object {

@@ -2,6 +2,7 @@ package ch.menetekel.foodradar
 
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.boot.context.properties.bind.ConstructorBinding
+import java.time.LocalDate
 
 data class Place(
     val name: String,
@@ -21,7 +22,7 @@ data class Place(
 }
 
 data class Menu(
-    val date: String,
+    val date: LocalDate,
     val courses: List<Course>,
 )
 
