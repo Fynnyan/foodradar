@@ -1,4 +1,3 @@
-
 export interface Place {
     name: string;
     web: string;
@@ -15,11 +14,18 @@ export enum ProcessingStatus {
 
 export interface Menu {
     date: string;
-    courses: Course[]
-,
+    courses: Course[],
 }
 
 export interface Course {
     name: string;
     price: string;
+}
+
+export interface FoodTruck {
+    id: string,
+    name: string,
+    web: string,
+    location: string,
+    days: string[]
 }
