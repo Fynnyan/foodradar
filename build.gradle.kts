@@ -1,6 +1,7 @@
 import com.bmuschko.gradle.docker.tasks.image.DockerBuildImage
 import com.bmuschko.gradle.docker.tasks.image.Dockerfile
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.jooq.meta.jaxb.ForcedType
 import org.jooq.meta.jaxb.Property
 
 plugins {
@@ -68,6 +69,18 @@ jooq {
                                 value = "public"
                             })
                         }
+                        forcedTypes = listOf(
+                            ForcedType().apply {
+                                userType = "kotlin.Array<java.time.DayOfWeek>"
+                                converter = "ch.menetekel.foodradar.DayOfWeekConverter"
+                                includeExpression = ".*\\.food_truck\\.days"
+                            }
+                        )
+
+                    }
+                    generate.apply {
+                        isPojos = true
+                        isRecords = true
                     }
                     target.apply {
                         packageName = "ch.menetekel.foodradar.jooq"

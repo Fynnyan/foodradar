@@ -4,6 +4,7 @@ create table food_truck
 (
     id       uuid primary key,
     name     varchar(100),
+    web      varchar(256),
     location varchar(100),
     days     int array
 );
@@ -11,7 +12,8 @@ create table food_truck
 create table place
 (
     id   uuid primary key,
-    name varchar(100)
+    name varchar(100),
+    web  varchar(256)
 );
 
 create table course
