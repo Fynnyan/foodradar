@@ -76,6 +76,7 @@ class DataCollectors(
                         ?: throw Exception("could not parse list and split text")
 
                     val day = dateAndText.getOrNull(0)?.lowercase()
+                    val menuText = dateAndText.getOrNull(1) ?: ""
 
                     // skip the daily soup and salat entry
                     if (day != "täglich") {
@@ -84,12 +85,13 @@ class DataCollectors(
 
                         Menu(
                             date = calcDate,
-                            courses = listOf(
+                            // sometimes they use the / to display two menus, options
+                            courses = menuText.split("/").map { name ->
                                 Course(
-                                    name = dateAndText.getOrNull(1)?.trim() ?: "",
+                                    name = name.trim(),
                                     price = null
                                 )
-                            )
+                            }
                         )
                     } else null
                 }
