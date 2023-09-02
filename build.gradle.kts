@@ -43,6 +43,7 @@ dependencies {
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
     implementation("org.jsoup:jsoup:1.16.1")
+    implementation("org.apache.pdfbox:pdfbox:3.0.0")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("io.projectreactor:reactor-test")

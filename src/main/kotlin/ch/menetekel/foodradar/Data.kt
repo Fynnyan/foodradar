@@ -40,7 +40,8 @@ enum class ProcessingStatus {
 @ConfigurationProperties(prefix = "places")
 data class PlacesConfig @ConstructorBinding constructor(
     val dreigaenger: PlacesMetaData,
-    val schichtwechsel: PlacesMetaData
+    val schichtwechsel: PlacesMetaData,
+    val leBeizli: PlacesMetaData
 ) {
     data class PlacesMetaData(
         val name: String,

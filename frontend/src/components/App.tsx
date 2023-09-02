@@ -11,6 +11,7 @@ function App() {
 
     const [drei, setDrei] = useState<Place>()
     const [schicht, setSchicht] = useState<Place>()
+    const [beiz, setBeiz] = useState<Place>()
     const [foodTrucks, setFoodTrucks] = useState<FoodTruck[]>()
 
     useEffect(() => {
@@ -26,6 +27,14 @@ function App() {
             .then((response) => response.json() as Promise<Place>)
             .then((place) => {
                 setSchicht(place)
+            })
+    }, [])
+
+    useEffect(() => {
+        fetch('/api/place/le-beizli')
+            .then((response) => response.json() as Promise<Place>)
+            .then((place) => {
+                setBeiz(place)
             })
     }, [])
 
@@ -51,6 +60,8 @@ function App() {
             {drei && <PlaceComponent place={drei} today={true}/>}
             <Spacer/>
             {schicht && <PlaceComponent place={schicht} today={true}/>}
+            <Spacer/>
+            {beiz && <PlaceComponent place={beiz} today={true}/>}
             <Spacer/>
             {foodTrucks && <FoodTruckComponent foodTrucks={foodTrucks}/>}
         </Container>

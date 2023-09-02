@@ -1,4 +1,4 @@
-import {Card, CardContent, Typography} from "@mui/material";
+import {Box, Card, CardContent, Typography} from "@mui/material";
 import {Course, Menu} from "./Data";
 
 interface MenuComponentProps {
@@ -7,7 +7,7 @@ interface MenuComponentProps {
 
 export const MenuComponent = (props: MenuComponentProps) => {
     return <Card>
-        <CardContent sx= {{display: "flex", flexDirection: "column", gap: "1rem"}}>
+        <CardContent sx={{display: "flex", flexDirection: "column", gap: "1rem"}}>
             <Typography variant={"body1"}>{props.menu.date}</Typography>
             {props.menu.courses.map((value, index) => <CourseComponent key={index} course={value}/>)}
         </CardContent>
@@ -20,5 +20,5 @@ interface CourseComponentProps {
 
 const CourseComponent = (props: CourseComponentProps) =>
     <>
-        <Typography sx={{ '&::before': { content: '"➢ "'} }} variant={"body1"}>{props.course.name}</Typography>
+        <Typography sx={{'&::before': {content: '"➢ "'}}} variant={"body1"}>{props.course.name}</Typography>
     </>

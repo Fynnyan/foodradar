@@ -1,11 +1,14 @@
 package ch.menetekel.foodradar
 
+import org.apache.pdfbox.Loader
+import org.apache.pdfbox.text.PDFTextStripper
 import org.jsoup.Jsoup
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Mono
 import reactor.kotlin.core.publisher.toMono
+import java.net.URL
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -103,13 +106,84 @@ class DataCollectors(
         }
     }
 
+    fun getLeBeizli(): Mono<Place> {
+        val pageWihtButtonToFile =
+            try { Jsoup.connect(placesConfig.leBeizli.scrapeAddress).get() }
+            catch (e: Exception) { return logAndReturnScrapeFailure(placesConfig.leBeizli, e) }
+
+        val pdfLink = pageWihtButtonToFile.select("a[href][data-doc-id]")
+                .find { it.text() == "Mittag" }//ToDo check spelling, link disappears and it was not present when writing code
+                ?.attr("abs:href")
+
+        if (pdfLink == null) return logAndReturnScrapeFailure(
+            placesConfig.leBeizli,
+            Exception("Could not find the link to the pdf to get and parse the lunch menu")
+        )
+
+        val pdf = Loader.loadPDF(URL(pdfLink).readBytes())
+        val text = PDFTextStripper().getText(pdf)
+
+        // stupid way to track the cursor when iterating over lines of the text, there are no constant markers
+        // for the sections and they may varies in lines
+        var menuTitlePassed = false
+        var pastaStarted = false
+        var pastaPassed = false
+        var meatStarted = false
+        var meatPassed = false
+        var vegiStarted = false
+        var parse = true
+
+        val date = StringBuilder()
+        val pasta = StringBuilder()
+        val meat = StringBuilder()
+        val vegi = StringBuilder()
+
+        text.lines()
+            .drop(1)
+            .filter { it.isNotBlank() }
+            .map { it.trim() }
+            .forEach {
+            when{
+                it.contains("F O R M U L E") -> menuTitlePassed = true
+                it.contains("Pasta") -> pastaStarted = true
+                it.contains("Fleischers") -> { meatStarted = true; pastaPassed = true }
+                it.contains("Garten") -> { vegiStarted = true; meatPassed = true }
+                it.contains("Roh macht froh") -> parse = false
+            }
+            if (parse) {
+                when {
+                    menuTitlePassed.not() -> date.append(it)
+                    pastaStarted && pastaPassed.not() -> pasta.appendLine(it)
+                    meatPassed && vegiStarted -> vegi.appendLine(it)
+                    pastaPassed && meatStarted -> meat.appendLine(it)
+                }
+            }
+        }
+
+        return Place(
+            name = "Le Beizli - $date",
+            web = "http://www.lebeizli.ch/flavours",
+            menus = listOf(
+                Menu(
+                    date = LocalDate.now(), // ToDo: parse date
+                    courses = listOf(
+                        Course(name = pasta.toString(), price = null),
+                        Course(name = meat.toString(), price = null),
+                        Course(name = vegi.toString(), price = null)
+                    )
+                )
+            ),
+            processingStatus = ProcessingStatus.PROCESSED
+        ).toMono()
+    }
+
     private fun logAndReturnScrapeFailure(config: PlacesConfig.PlacesMetaData, exception: Exception?): Mono<Place> {
         log.error("Could not scrape ${config.scrapeAddress}", exception)
         return Place.from(config, emptyList(), ProcessingStatus.SITE_NOT_ACCESSIBLE).toMono()
     }
 
     private fun logAndReturnProcessingFailure(config: PlacesConfig.PlacesMetaData, exception: Exception?): Mono<Place> {
-        log.error("Could process the page of ${config.scrapeAddress}", exception)
+        log.error("Could not process the page of ${config.scrapeAddress}", exception)
         return Place.from(config, emptyList(), ProcessingStatus.PROCESS_ERROR).toMono()
     }
 

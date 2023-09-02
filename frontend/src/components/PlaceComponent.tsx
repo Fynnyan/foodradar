@@ -16,7 +16,7 @@ export const PlaceComponent = (props: PlaceComponentProps) => {
         <CardHeader
             title={props.place.name}
             titleTypographyProps={{variant: "h5"}}
-            avatar={<Link href={props.place.web} sx={{height: "32px"}}><LocalDiningIcon sx={{fontSize: "32px"}}/></Link>}
+            avatar={<Link target="_blank" href={props.place.web} sx={{height: "32px"}}><LocalDiningIcon sx={{fontSize: "32px"}}/></Link>}
         />
         {props.place.menus
             .filter( (it) => it.date === dateString )

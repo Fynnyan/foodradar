@@ -24,9 +24,8 @@ class FoodRadarApi(
         dataCollectors.fetchSchichtWechselMenu()
 
     @GetMapping("/place/le-beizli")
-    fun getLeBeizliMenu(): Flux<Menu> {
-        TODO()
-    }
+    fun getLeBeizliMenu(): Mono<Place> =
+        dataCollectors.getLeBeizli()
 
     @GetMapping("/food-trucks")
     fun getAllFoodTrucks(): Flux<FoodTruck> {
