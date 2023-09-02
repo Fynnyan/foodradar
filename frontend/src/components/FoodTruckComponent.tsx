@@ -24,7 +24,7 @@ export const FoodTruckComponent = (props: FoodTruckComponentProps) => {
 
 const NoFoodTrucks = () =>
     <Box sx={{display: "flex", flexDirection: "column", alignItems: "center"}}>
-        <SvgIcon viewBox={"0 0 36 36"} sx={{fontSize: "10rem"}}>
+        <SvgIcon viewBox={"0 0 36 36"} sx={{fontSize: "5rem"}}>
             <TruckGoneIcon/>
         </SvgIcon>
         <Typography variant={"body1"}>There are no food trucks today</Typography>
