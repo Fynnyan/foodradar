@@ -1,3 +1,4 @@
 rootProject.name = "food-radar"
 
-include("frontend")
+include("radar-frontend")
+include("radar-backend")

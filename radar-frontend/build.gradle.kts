@@ -16,3 +16,7 @@ node {
     download = false
     version = "18.15.0"
 }
+
+tasks.register("clean", Delete::class.java) {
+    delete = setOf(project.buildDir)
+}
