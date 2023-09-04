@@ -111,8 +111,9 @@ class DataCollectors(
             try { Jsoup.connect(placesConfig.leBeizli.scrapeAddress).get() }
             catch (e: Exception) { return logAndReturnScrapeFailure(placesConfig.leBeizli, e) }
 
+        // the link has no dedicated id, search by text content
         val pdfLink = pageWihtButtonToFile.select("a[href][data-doc-id]")
-                .find { it.text() == "Mittag" }//ToDo check spelling, link disappears and it was not present when writing code
+                .find { it.text() == "Mittagsmenu" }
                 ?.attr("abs:href")
 
         if (pdfLink == null) return logAndReturnScrapeFailure(
