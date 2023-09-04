@@ -5,12 +5,15 @@ plugins {
     id("com.bmuschko.docker-remote-api") version "6.7.0"
 }
 
-group = "ch.menetekel"
-version = "1.0.0"
+val g = "ch.menetekel"
+val v = "1.1.0"
+
+group = g
+version = v
 
 subprojects {
-    group = "ch.menetekel"
-    version = "1.0.0"
+    group = g
+    version = v
 }
 
 val beProject = project(":radar-backend")
