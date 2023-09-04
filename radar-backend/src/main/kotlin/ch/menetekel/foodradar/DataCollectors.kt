@@ -107,75 +107,79 @@ class DataCollectors(
     }
 
     fun getLeBeizli(): Mono<Place> {
-        val pageWihtButtonToFile =
-            try { Jsoup.connect(placesConfig.leBeizli.scrapeAddress).get() }
-            catch (e: Exception) { return logAndReturnScrapeFailure(placesConfig.leBeizli, e) }
+        return try {
+            val pageWihtButtonToFile = Jsoup.connect(placesConfig.leBeizli.scrapeAddress).get()
 
-        // the link has no dedicated id, search by text content
-        val pdfLink = pageWihtButtonToFile.select("a[href][data-doc-id]")
+            // the link has no dedicated id, search by text content
+            val pdfLink = pageWihtButtonToFile.select("a[href][data-doc-id]")
                 .find { it.text() == "Mittagsmenu" }
                 ?.attr("abs:href")
-
-        if (pdfLink == null) return logAndReturnScrapeFailure(
-            placesConfig.leBeizli,
-            Exception("Could not find the link to the pdf to get and parse the lunch menu")
-        )
-
-        val pdf = Loader.loadPDF(URL(pdfLink).readBytes())
-        val text = PDFTextStripper().getText(pdf)
-
-        // stupid way to track the cursor when iterating over lines of the text, there are no constant markers
-        // for the sections and they may varies in lines
-        var menuTitlePassed = false
-        var pastaStarted = false
-        var pastaPassed = false
-        var meatStarted = false
-        var meatPassed = false
-        var vegiStarted = false
-        var parse = true
-
-        val date = StringBuilder()
-        val pasta = StringBuilder()
-        val meat = StringBuilder()
-        val vegi = StringBuilder()
-
-        text.lines()
-            .drop(1)
-            .filter { it.isNotBlank() }
-            .map { it.trim() }
-            .forEach {
-            when{
-                it.contains("F O R M U L E") -> menuTitlePassed = true
-                it.contains("Pasta") -> pastaStarted = true
-                it.contains("Fleischers") -> { meatStarted = true; pastaPassed = true }
-                it.contains("Garten") -> { vegiStarted = true; meatPassed = true }
-                it.contains("Roh macht froh") -> parse = false
-            }
-            if (parse) {
-                when {
-                    menuTitlePassed.not() -> date.append(it)
-                    pastaStarted && pastaPassed.not() -> pasta.appendLine(it)
-                    meatPassed && vegiStarted -> vegi.appendLine(it)
-                    pastaPassed && meatStarted -> meat.appendLine(it)
-                }
-            }
-        }
-
-        return Place(
-            name = "Le Beizli - $date",
-            web = "http://www.lebeizli.ch/flavours",
-            menus = listOf(
-                Menu(
-                    date = LocalDate.now(), // ToDo: parse date
-                    courses = listOf(
-                        Course(name = pasta.toString(), price = null),
-                        Course(name = meat.toString(), price = null),
-                        Course(name = vegi.toString(), price = null)
-                    )
+                ?: return logAndReturnScrapeFailure(
+                    placesConfig.leBeizli,
+                    Exception("Could not find the link to the pdf to get and parse the lunch menu")
                 )
-            ),
-            processingStatus = ProcessingStatus.PROCESSED
-        ).toMono()
+
+            val pdf = Loader.loadPDF(URL(pdfLink).readBytes())
+            val text = PDFTextStripper().getText(pdf)
+
+            // stupid way to track the cursor when iterating over lines of the text, there are no constant markers
+            // for the sections and they may varies in lines
+            var menuTitlePassed = false
+            var pastaStarted = false
+            var pastaPassed = false
+            var meatStarted = false
+            var meatPassed = false
+            var vegiStarted = false
+            var parse = true
+
+            val date = StringBuilder()
+            val pasta = StringBuilder()
+            val meat = StringBuilder()
+            val vegi = StringBuilder()
+
+            text.lines()
+                .drop(1)
+                .filter { it.isNotBlank() }
+                .map { it.trim() }
+                .forEach {
+                    when {
+                        it.contains("F O R M U L E") -> menuTitlePassed = true
+                        it.contains("Pasta") -> pastaStarted = true
+                        it.contains("Fleischers") -> { meatStarted = true; pastaPassed = true }
+                        it.contains("Garten") -> { vegiStarted = true; meatPassed = true }
+                        it.contains("Roh macht froh") -> parse = false
+                    }
+                    if (parse) {
+                        when {
+                            menuTitlePassed.not() -> date.append(it)
+                            pastaStarted && pastaPassed.not() -> pasta.appendLine(it)
+                            meatPassed && vegiStarted -> vegi.appendLine(it)
+                            pastaPassed && meatStarted -> meat.appendLine(it)
+                        }
+                    }
+                }
+
+            Place(
+                name = placesConfig.leBeizli.name,
+                web = placesConfig.leBeizli.web,
+                menus = listOf(
+                    Menu(
+                        date = LocalDate.parse(
+                            date,
+                            DateTimeFormatters.LE_BEIZLI_DATE
+                        ),
+                        courses = listOf(
+                            Course(name = pasta.toString(), price = null),
+                            Course(name = meat.toString(), price = null),
+                            Course(name = vegi.toString(), price = null)
+                        )
+                    )
+                ),
+                processingStatus = ProcessingStatus.PROCESSED
+            ).toMono()
+        } catch (e: Exception) {
+            logAndReturnScrapeFailure(placesConfig.leBeizli, e)
+        }
     }
 
     private fun logAndReturnScrapeFailure(config: PlacesConfig.PlacesMetaData, exception: Exception?): Mono<Place> {
