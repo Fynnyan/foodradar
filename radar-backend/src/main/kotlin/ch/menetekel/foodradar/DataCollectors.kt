@@ -11,7 +11,6 @@ import reactor.kotlin.core.publisher.toMono
 import java.net.URL
 import java.time.DayOfWeek
 import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 
 @Service
 class DataCollectors(
@@ -50,11 +49,8 @@ class DataCollectors(
                         }
                     }
                     Menu(
-                        LocalDate.parse(
-                            date.split(",")[1].trim(),
-                            DateTimeFormatter.ofPattern("dd.MM.yyyy")
-                        ),
-                        courses.mapIndexed { i, e -> Course(e, prices.getOrNull(i)) }
+                        date = LocalDate.parse(date, DateTimeFormatters.DREIGAENGER_DATE),
+                        courses = courses.mapIndexed { i, e -> Course(e, prices.getOrNull(i)) }
                     )
                 }
                 ?.let { Place.from(placesConfig.dreigaenger, it, ProcessingStatus.PROCESSED).toMono() }

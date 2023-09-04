@@ -5,6 +5,10 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.CsvSource
 import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import java.time.format.DateTimeFormatterBuilder
+import java.time.format.SignStyle
+import java.time.temporal.ChronoField
 
 class DateTimeFormattersTest {
 
@@ -33,12 +37,23 @@ class DateTimeFormattersTest {
         dateString: String,
         expectedDate: String
     ) {
+        val date = LocalDate.parse(dateString, DateTimeFormatters.LE_BEIZLI_DATE)
+        assertThat(date.toString()).isEqualTo(expectedDate)
+    }
 
-        val date = LocalDate.parse(
-            dateString,
-            DateTimeFormatters.LE_BEIZLI_DATE
-        )
-
+    @ParameterizedTest
+    @CsvSource(
+        "'Montag, 04.09.2023', 2023-09-04",
+        "'Dienstag, 05.09.2023', 2023-09-05",
+        "'Mittwoch, 06.09.2023', 2023-09-06",
+        "'Donnerstag, 07.09.2023', 2023-09-07",
+        "'Freitag, 08.09.2023', 2023-09-08",
+    )
+    fun `Can parse various dates in the dreiganger date format`(
+        dateString: String,
+        expectedDate: String
+    ) {
+        val date = LocalDate.parse(dateString, DateTimeFormatters.DREIGAENGER_DATE)
         assertThat(date.toString()).isEqualTo(expectedDate)
     }
 }

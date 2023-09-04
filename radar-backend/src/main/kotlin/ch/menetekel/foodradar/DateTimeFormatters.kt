@@ -46,4 +46,21 @@ object DateTimeFormatters {
         .appendLiteral(' ')
         .appendValue(ChronoField.YEAR, 4)
         .toFormatter()
+
+    /**
+     * expected datete format: Montag, 04.09.2023
+     */
+    val DREIGAENGER_DATE = DateTimeFormatterBuilder()
+        .parseCaseInsensitive()
+        .parseLenient()
+        .optionalStart()
+        .appendText(ChronoField.DAY_OF_WEEK, dayOfWeekGerman)
+        .appendLiteral(", ")
+        .optionalEnd()
+        .appendValue(ChronoField.DAY_OF_MONTH, 2)
+        .appendLiteral('.')
+        .appendValue(ChronoField.MONTH_OF_YEAR, 2)
+        .appendLiteral('.')
+        .appendValue(ChronoField.YEAR, 4)
+        .toFormatter()
 }
