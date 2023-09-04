@@ -103,17 +103,19 @@ class DataCollectors(
     }
 
     fun getLeBeizli(): Mono<Place> {
-        return try {
+        val pdfLink = try {
             val pageWihtButtonToFile = Jsoup.connect(placesConfig.leBeizli.scrapeAddress).get()
 
             // the link has no dedicated id, search by text content
-            val pdfLink = pageWihtButtonToFile.select("a[href][data-doc-id]")
+            pageWihtButtonToFile.select("a[href][data-doc-id]")
                 .find { it.text() == "Mittagsmenu" }
                 ?.attr("abs:href")
-                ?: return logAndReturnScrapeFailure(
-                    placesConfig.leBeizli,
-                    Exception("Could not find the link to the pdf to get and parse the lunch menu")
-                )
+                ?: throw Exception("Could not find the link to the pdf to get and parse the lunch menu")
+        } catch (e: Exception) {
+            return logAndReturnScrapeFailure(placesConfig.leBeizli, e)
+        }
+
+        return try {
 
             val pdf = Loader.loadPDF(URL(pdfLink).readBytes())
             val text = PDFTextStripper().getText(pdf)
@@ -174,7 +176,7 @@ class DataCollectors(
                 processingStatus = ProcessingStatus.PROCESSED
             ).toMono()
         } catch (e: Exception) {
-            logAndReturnScrapeFailure(placesConfig.leBeizli, e)
+            logAndReturnProcessingFailure(placesConfig.leBeizli, e)
         }
     }
 
