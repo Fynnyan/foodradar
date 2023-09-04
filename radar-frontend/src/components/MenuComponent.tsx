@@ -1,4 +1,4 @@
-import {Box, Card, CardContent, Typography} from "@mui/material";
+import {Card, CardContent, Typography} from "@mui/material";
 import {Course, Menu} from "./Data";
 
 interface MenuComponentProps {

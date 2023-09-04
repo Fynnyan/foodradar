@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {PlaceComponent} from "./PlaceComponent";
 import {FoodTruck, Place} from "./Data";
-import {AppBar, Box, Container, Divider, Link, Toolbar, Typography} from "@mui/material";
+import {AppBar, Box, Container, Link, Toolbar, Typography} from "@mui/material";
 import {FoodTruckComponent} from "./FoodTruckComponent";
 import {GitHub} from "@mui/icons-material";
 import {Spacer} from "./CommonComponents";
