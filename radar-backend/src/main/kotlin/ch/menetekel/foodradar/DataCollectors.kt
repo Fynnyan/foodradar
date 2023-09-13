@@ -66,37 +66,37 @@ class DataCollectors(
             catch (e: Exception) { return logAndReturnScrapeFailure(placesConfig.schichtwechsel, e) }
 
         return try {
-            page.selectFirst(".rmc-menu > ul")
-                ?.children()
-                ?.map men@{
-                    val dateAndText = it.selectFirst("p")
-                        ?.text()
-                        ?.split(":")
-                        ?: throw Exception("could not parse list and split text")
+            // days where there are two courses have no day entry, is blank,
+            // store the last parsed day and use it as the day for this case
+            var lastParsedDayOfWeek = ""
 
-                    val day = dateAndText.getOrNull(0)?.lowercase()
-                    val menuText = dateAndText.getOrNull(1) ?: ""
+            page.select(".wochenmenue")
+                .mapNotNull {
+                    val day = it.selectFirst("h3")
+                        ?.text()
+                        ?.lowercase()
+                        ?.also { parsedDay -> lastParsedDayOfWeek = parsedDay }
+
+                    val menuText = it.selectFirst("p")
+                        ?.text()
+                        ?: "No Menu for day $day"
 
                     // skip the daily soup and salat entry
                     if (day != "täglich") {
-                        val calcDate = getDateRelativeOfGermanDayForCurrentWeek(day ?: "")
+
+                        val calcDate = getDateRelativeOfGermanDayForCurrentWeek(day ?: lastParsedDayOfWeek)
                             ?: throw Exception("Could not parse and calculate date from the $day text")
 
-                        Menu(
-                            date = calcDate,
-                            // sometimes they use the / to display two menus, options
-                            courses = menuText.split("/").map { name ->
-                                Course(
-                                    name = name.trim(),
-                                    price = null
-                                )
-                            }
-                        )
+                        calcDate to Course(name = menuText, price = null)
+
                     } else null
                 }
-                ?.filterNotNull()
-                ?.let { Place.from(placesConfig.schichtwechsel, it, ProcessingStatus.PROCESSED).toMono() }
-                ?: throw Exception("Did not find the specified elements to process")
+                .groupBy(
+                    keySelector = { it.first },
+                    valueTransform = { it.second }
+                )
+                .map { Menu(date = it.key, courses = it.value) }
+                .let { Place.from(placesConfig.schichtwechsel, it, ProcessingStatus.PROCESSED).toMono() }
         } catch (e: Exception) {
             logAndReturnProcessingFailure(placesConfig.schichtwechsel, e)
         }
