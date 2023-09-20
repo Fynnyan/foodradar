@@ -134,9 +134,7 @@ class DataCollectors(
             var parse = true
 
             val date = StringBuilder()
-            val pasta = StringBuilder()
-            val meat = StringBuilder()
-            val vegi = StringBuilder()
+            val all = StringBuilder()
 
             text.lines()
                 .drop(1)
@@ -153,12 +151,16 @@ class DataCollectors(
                     if (parse) {
                         when {
                             menuTitlePassed.not() -> date.append(it)
-                            pastaStarted && pastaPassed.not() -> pasta.appendLine(it)
-                            meatPassed && vegiStarted -> vegi.appendLine(it)
-                            pastaPassed && meatStarted -> meat.appendLine(it)
+                            pastaStarted -> all.appendLine(it)
                         }
                     }
                 }
+
+            val pasta = "(?<pasta>Pasta(?:(?!(Garten|Fleisch))\\X)*)".toRegex().find(all)?.value
+            val meat = "(?<fleisch>Fleisch(?:(?!(Garten|Pasta))\\X)*)".toRegex().find(all)?.value
+            val vegi = "(?<garten>Garten(?:(?!(Fleisch|Pasta))\\X)*)".toRegex().find(all)?.value
+
+            if (pasta == null && meat == null && vegi == null) throw Exception("Could not parse the lunch menu, the regex didn't find it.")
 
             Place(
                 name = placesConfig.leBeizli.name,
@@ -170,9 +172,9 @@ class DataCollectors(
                             DateTimeFormatters.LE_BEIZLI_DATE
                         ),
                         courses = listOf(
-                            Course(name = pasta.toString(), price = null),
-                            Course(name = meat.toString(), price = null),
-                            Course(name = vegi.toString(), price = null)
+                            Course(name = pasta ?: "There is no pasta menu or the parser did not find it.", price = null),
+                            Course(name = meat ?: "There is no meat menu or the parser did not find it.", price = null),
+                            Course(name = vegi ?: "There is no vegi menu or the parser did not find it.", price = null)
                         )
                     )
                 ),
