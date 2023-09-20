@@ -68,14 +68,14 @@ class DataCollectors(
         return try {
             // days where there are two courses have no day entry, is blank,
             // store the last parsed day and use it as the day for this case
-            var lastParsedDayOfWeek = ""
+            var lastParsedDayOfWeek: DayOfWeek? = null
 
             page.select(".wochenmenue")
                 .mapNotNull {
                     val day = it.selectFirst("h3")
                         ?.text()
                         ?.lowercase()
-                        ?.also { parsedDay -> lastParsedDayOfWeek = parsedDay }
+                        ?.also { parsedDay -> parseGermanDayOfWeek(parsedDay)?.let { d -> lastParsedDayOfWeek = d } }
 
                     val menuText = it.selectFirst("p")
                         ?.text()
@@ -84,8 +84,11 @@ class DataCollectors(
                     // skip the daily soup and salat entry
                     if (day != "täglich") {
 
-                        val calcDate = getDateRelativeOfGermanDayForCurrentWeek(day ?: lastParsedDayOfWeek)
-                            ?: throw Exception("Could not parse and calculate date from the $day text")
+                        val calcDate = getDateRelativeOfWeekdayForCurrentWeek(
+                            parseGermanDayOfWeek(day)
+                                ?: lastParsedDayOfWeek
+                                ?: throw Exception("Could not parse and calculate date from the '$day' text")
+                        )
 
                         calcDate to Course(name = menuText, price = null)
 
@@ -190,21 +193,20 @@ class DataCollectors(
         return Place.from(config, emptyList(), ProcessingStatus.PROCESS_ERROR).toMono()
     }
 
-
-    fun getDateRelativeOfGermanDayForCurrentWeek(germanDay: String): LocalDate? {
-        val dayOfWeek = when (germanDay.lowercase()) {
-            "montag" -> DayOfWeek.MONDAY
-            "dienstag" -> DayOfWeek.TUESDAY
-            "mittwoch" -> DayOfWeek.WEDNESDAY
-            "donnerstag" -> DayOfWeek.THURSDAY
-            "freitag" -> DayOfWeek.FRIDAY
-            else -> return null
-        }
-
+    fun getDateRelativeOfWeekdayForCurrentWeek(dayOfWeek: DayOfWeek): LocalDate {
         val now = LocalDate.now()
         val currentDay = now.dayOfWeek
         val op = dayOfWeek.value - currentDay.value
         return now.plusDays(op.toLong())
+    }
+
+    fun parseGermanDayOfWeek(germanDay: String?) = when (germanDay?.lowercase()) {
+        "montag" -> DayOfWeek.MONDAY
+        "dienstag" -> DayOfWeek.TUESDAY
+        "mittwoch" -> DayOfWeek.WEDNESDAY
+        "donnerstag" -> DayOfWeek.THURSDAY
+        "freitag" -> DayOfWeek.FRIDAY
+        else -> null
     }
 
     companion object {
