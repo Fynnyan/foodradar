@@ -20,6 +20,7 @@ function App() {
             .then((place) => {
                 setDrei(place)
             })
+            .catch(reason => console.log(reason))
     }, [])
 
     useEffect(() => {
@@ -28,6 +29,7 @@ function App() {
             .then((place) => {
                 setSchicht(place)
             })
+            .catch(reason => console.log(reason))
     }, [])
 
     useEffect(() => {
@@ -36,6 +38,7 @@ function App() {
             .then((place) => {
                 setBeiz(place)
             })
+            .catch(reason => console.log(reason))
     }, [])
 
     useEffect(() => {
@@ -44,6 +47,7 @@ function App() {
             .then((foodTrucks) => {
                 setFoodTrucks(foodTrucks)
             })
+            .catch(reason => console.log(reason))
     }, [])
 
     return (
