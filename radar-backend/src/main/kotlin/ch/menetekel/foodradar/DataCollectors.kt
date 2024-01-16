@@ -1,7 +1,6 @@
 package ch.menetekel.foodradar
 
 import org.apache.pdfbox.Loader
-import org.apache.pdfbox.text.PDFTextStripper
 import org.jsoup.Jsoup
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -107,11 +106,11 @@ class DataCollectors(
 
     fun getLeBeizli(): Mono<Place> {
         val pdfLink = try {
-            val pageWihtButtonToFile = Jsoup.connect(placesConfig.leBeizli.scrapeAddress).get()
+            val pageWithButtonToFile = Jsoup.connect(placesConfig.leBeizli.scrapeAddress).get()
 
             // the link has no dedicated id, search by text content
-            pageWihtButtonToFile.select("a[href][data-doc-id]")
-                .find { it.text() == "Mittagsmenu" }
+            pageWithButtonToFile.select("a[href][data-doc-id]")
+                .find { it.text().lowercase() == "mittagsmenu" }
                 ?.attr("abs:href")
                 ?: throw Exception("Could not find the link to the pdf to get and parse the lunch menu")
         } catch (e: Exception) {
@@ -121,63 +120,12 @@ class DataCollectors(
         return try {
 
             val pdf = Loader.loadPDF(URL(pdfLink).readBytes())
-            val text = PDFTextStripper().getText(pdf)
-
-            // stupid way to track the cursor when iterating over lines of the text, there are no constant markers
-            // for the sections and they may varies in lines
-            var menuTitlePassed = false
-            var pastaStarted = false
-            var pastaPassed = false
-            var meatStarted = false
-            var meatPassed = false
-            var vegiStarted = false
-            var parse = true
-
-            val date = StringBuilder()
-            val all = StringBuilder()
-
-            text.lines()
-                .drop(1)
-                .filter { it.isNotBlank() }
-                .map { it.trim() }
-                .forEach {
-                    when {
-                        it.contains("F O R M U L E") -> menuTitlePassed = true
-                        it.contains("Pasta") -> pastaStarted = true
-                        it.contains("Fleischers") -> { meatStarted = true; pastaPassed = true }
-                        it.contains("Garten") -> { vegiStarted = true; meatPassed = true }
-                        it.contains("Roh macht froh") -> parse = false
-                    }
-                    if (parse) {
-                        when {
-                            menuTitlePassed.not() -> date.append(it)
-                            pastaStarted -> all.appendLine(it)
-                        }
-                    }
-                }
-
-            val pasta = "(?<pasta>Pasta(?:(?!(Garten|Fleisch))\\X)*)".toRegex().find(all)?.value
-            val meat = "(?<fleisch>Fleisch(?:(?!(Garten|Pasta))\\X)*)".toRegex().find(all)?.value
-            val vegi = "(?<garten>Garten(?:(?!(Fleisch|Pasta))\\X)*)".toRegex().find(all)?.value
-
-            if (pasta == null && meat == null && vegi == null) throw Exception("Could not parse the lunch menu, the regex didn't find it.")
+            val menu = LeBeizliPdfProcessor(pdf).getMenu()
 
             Place(
                 name = placesConfig.leBeizli.name,
                 web = placesConfig.leBeizli.web,
-                menus = listOf(
-                    Menu(
-                        date = LocalDate.parse(
-                            date,
-                            DateTimeFormatters.LE_BEIZLI_DATE
-                        ),
-                        courses = listOf(
-                            Course(name = pasta ?: "There is no pasta menu or the parser did not find it.", price = null),
-                            Course(name = meat ?: "There is no meat menu or the parser did not find it.", price = null),
-                            Course(name = vegi ?: "There is no vegi menu or the parser did not find it.", price = null)
-                        )
-                    )
-                ),
+                menus = listOf(menu),
                 processingStatus = ProcessingStatus.PROCESSED
             ).toMono()
         } catch (e: Exception) {
@@ -212,7 +160,7 @@ class DataCollectors(
     }
 
     companion object {
-        val log: Logger = LoggerFactory.getLogger(DataCollectors::class.java)
+        private val log: Logger = LoggerFactory.getLogger(DataCollectors::class.java)
     }
 }
 
