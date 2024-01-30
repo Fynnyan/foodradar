@@ -24,7 +24,7 @@ export const PlaceComponent = (props: PlaceComponentProps) => {
             avatar={<Link target="_blank" href={props.place.web} sx={{height: "32px"}}><LocalDiningIcon
                 sx={{fontSize: "32px"}}/></Link>}
         />
-        {menus.map((value, index) => <MenuComponent key={index} menu={value}/>)}
+        {menus.map((value, index) => <MenuComponent key={index} menu={value} placeName={props.place.name}/>)}
         {menus.length === 0 && <InfoBox status={props.place.processingStatus}/>}
     </Card>
 }
