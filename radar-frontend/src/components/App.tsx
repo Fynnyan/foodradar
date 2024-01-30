@@ -1,10 +1,10 @@
 import React, {useEffect, useState} from 'react';
-import {PlaceComponent} from "./PlaceComponent";
+import {LoadingPlace, PlaceComponent} from "./PlaceComponent";
 import {FoodTruck, Place} from "./Data";
 import {AppBar, Box, Container, Link, Toolbar, Typography} from "@mui/material";
 import {FoodTruckComponent} from "./FoodTruckComponent";
 import {GitHub} from "@mui/icons-material";
-import {Spacer} from "./CommonComponents";
+import {Spacer, RadarSpinner} from "./CommonComponents";
 
 
 function App() {
@@ -61,11 +61,11 @@ function App() {
                 </AppBar>
             </Box>
             <Spacer/>
-            {drei && <PlaceComponent place={drei} today={true}/>}
+            { drei ? <PlaceComponent place={drei} today={true}/> : <LoadingPlace title={"Dreigänger"}/> }
             <Spacer/>
-            {schicht && <PlaceComponent place={schicht} today={true}/>}
+            {schicht ? <PlaceComponent place={schicht} today={true}/> : <LoadingPlace title={"Schichtwechsel"}/> }
             <Spacer/>
-            {beiz && <PlaceComponent place={beiz} today={true}/>}
+            {beiz ? <PlaceComponent place={beiz} today={true}/> : <LoadingPlace title={"Le-Beizli"}/>}
             <Spacer/>
             {foodTrucks && <FoodTruckComponent foodTrucks={foodTrucks}/>}
         </Container>

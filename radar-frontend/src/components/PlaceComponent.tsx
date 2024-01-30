@@ -3,6 +3,7 @@ import {Place, ProcessingStatus} from "./Data";
 import {MenuComponent} from "./MenuComponent";
 import React from "react";
 import LocalDiningIcon from '@mui/icons-material/LocalDining';
+import {RadarSpinner} from "./CommonComponents";
 
 interface PlaceComponentProps {
     place: Place
@@ -27,6 +28,16 @@ export const PlaceComponent = (props: PlaceComponentProps) => {
         {menus.length === 0 && <InfoBox status={props.place.processingStatus}/>}
     </Card>
 }
+
+interface LoadingPlaceProps {
+    title: string
+}
+
+export const LoadingPlace = (props: LoadingPlaceProps) =>
+    <Card>
+        <RadarSpinner label={props.title}/>
+    </Card>
+
 
 interface InfoBoxProps {
     status: ProcessingStatus
