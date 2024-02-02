@@ -27,7 +27,6 @@ export const RadarSpinner = (props: RadarSpinnerProps) =>
             animationName: "radar-spin",
             animationDuration: "0.8s",
             animationTimingFunction: "linear",
-            animationDelay: "1s",
             animationIterationCount: "infinite",
         }}
         />
