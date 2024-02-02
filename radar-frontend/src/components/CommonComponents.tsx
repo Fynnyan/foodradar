@@ -1,7 +1,7 @@
-import {Box, SvgIcon, Typography} from "@mui/material";
+import {Box, Typography} from "@mui/material";
 import React from "react";
 import "./radar-spin.css"
-import {ReactComponent as RadarSpinnerIcon} from '../icons/radar-spinner.svg';
+import {RadarSpinnerIcon} from "../icons/Icons";
 
 interface SpacerProps {}
 
@@ -9,8 +9,10 @@ export const Spacer = (props: SpacerProps) =>
     <Box sx={{height: "1rem"}} />
 
 interface RadarSpinnerProps {
+    // ToDo; Make it a component
     label?: string
 }
+
 export const RadarSpinner = (props: RadarSpinnerProps) =>
     <Box sx={{
         display: "flex",
@@ -19,16 +21,14 @@ export const RadarSpinner = (props: RadarSpinnerProps) =>
         padding: "1rem",
         justifyContent: "center"
     }}>
-        {props.label && <Typography variant={"h5"}>{props.label}</Typography> }
+        {props.label && <Typography variant={"h5"}>{props.label}</Typography>}
         <Spacer/>
-        <SvgIcon viewBox={"0 0 36 36"} sx={
-            {
-                animationName: "radar-spin",
-                animationDuration: "0.8s",
-                animationTimingFunction: "linear",
-                animationDelay: "1s",
-                animationIterationCount: "infinite",
-            }}>
-            <RadarSpinnerIcon/>
-        </SvgIcon>
+        <RadarSpinnerIcon sx={{
+            animationName: "radar-spin",
+            animationDuration: "0.8s",
+            animationTimingFunction: "linear",
+            animationDelay: "1s",
+            animationIterationCount: "infinite",
+        }}
+        />
     </Box>
