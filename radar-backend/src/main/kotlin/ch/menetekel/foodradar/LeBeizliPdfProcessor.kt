@@ -30,7 +30,7 @@ class LeBeizliPdfProcessor(pdf: PDDocument) {
                     date,
                     DateTimeFormatters.LE_BEIZLI_DATE
                 )
-            }.getOrElse { LocalDate.now() },
+            }.getOrThrow(),
             courses = listOfNotNull(
                 Course(name = pasta ?: "There is no pasta menu or the parser did not find it.", price = null),
                 Course(name = meat ?: "There is no meat menu or the parser did not find it.", price = null),
