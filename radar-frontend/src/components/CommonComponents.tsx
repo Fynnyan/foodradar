@@ -1,6 +1,5 @@
-import {Box, Typography} from "@mui/material";
+import {Box, keyframes, Typography} from "@mui/material";
 import React from "react";
-import "./radar-spin.css"
 import {RadarSpinnerIcon} from "../icons/Icons";
 
 interface SpacerProps {}
@@ -24,10 +23,19 @@ export const RadarSpinner = (props: RadarSpinnerProps) =>
         {props.label && <Typography variant={"h5"}>{props.label}</Typography>}
         <Spacer/>
         <RadarSpinnerIcon sx={{
-            animationName: "radar-spin",
+            animationName: `${radarSpin}`,
             animationDuration: "0.8s",
             animationTimingFunction: "linear",
             animationIterationCount: "infinite",
         }}
         />
     </Box>
+
+const radarSpin = keyframes`
+  0% {
+    rotate: 0deg;
+  }
+  100% {
+    rotate: 360deg;
+  }
+`
