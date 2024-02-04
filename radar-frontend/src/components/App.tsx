@@ -4,8 +4,8 @@ import {FoodTruck, Place} from "./Data";
 import {AppBar, Box, Container, Link, Toolbar, Typography} from "@mui/material";
 import {FoodTruckComponent} from "./FoodTruckComponent";
 import {GitHub} from "@mui/icons-material";
-import {Spacer, RadarSpinner} from "./CommonComponents";
-
+import {Spacer} from "./CommonComponents";
+import {AnimatedFoodRadarIcon} from "../icons/AnimatedFoodRadarIcon";
 
 function App() {
 
@@ -52,18 +52,19 @@ function App() {
 
     return (
         <Container maxWidth="md">
-            <Box>
-                <AppBar position="static">
-                    <Toolbar sx={{ justifyContent: "space-between"}}>
-                        <Typography variant={"h6"}>Food Radar Bern</Typography>
-                        <Link href={"https://github.com/Fynnyan/foodradar"}><GitHub/></Link>
-                    </Toolbar>
-                </AppBar>
-            </Box>
+            <AppBar position="static">
+                <Toolbar sx={{justifyContent: "space-between"}}>
+                    <Box sx={{display: "flex", flexDirection: "row", alignItems: "center"}}>
+                        <AnimatedFoodRadarIcon/>
+                        <Typography variant={"h6"}> Food Radar Bern</Typography>
+                    </Box>
+                    <Link href={"https://github.com/Fynnyan/foodradar"}><GitHub/></Link>
+                </Toolbar>
+            </AppBar>
             <Spacer/>
-            { drei ? <PlaceComponent place={drei} today={true}/> : <LoadingPlace title={"Dreigänger"}/> }
+            {drei ? <PlaceComponent place={drei} today={true}/> : <LoadingPlace title={"Dreigänger"}/>}
             <Spacer/>
-            {schicht ? <PlaceComponent place={schicht} today={true}/> : <LoadingPlace title={"Schichtwechsel"}/> }
+            {schicht ? <PlaceComponent place={schicht} today={true}/> : <LoadingPlace title={"Schichtwechsel"}/>}
             <Spacer/>
             {beiz ? <PlaceComponent place={beiz} today={true}/> : <LoadingPlace title={"Le-Beizli"}/>}
             <Spacer/>
