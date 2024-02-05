@@ -8,6 +8,7 @@ plugins {
     id("io.spring.dependency-management") version "1.1.2"
     id("com.bmuschko.docker-remote-api") version "6.7.0"
     id("nu.studer.jooq") version "8.2"
+    id("org.graalvm.buildtools.native") version "0.9.28"
     kotlin("jvm") version "1.8.22"
     kotlin("plugin.spring") version "1.8.22"
 }
@@ -40,6 +41,8 @@ dependencies {
 
     implementation("org.jsoup:jsoup:1.16.1")
     implementation("org.apache.pdfbox:pdfbox:3.0.0")
+    implementation("org.slf4j:jcl-over-slf4j:2.0.11")
+
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("io.projectreactor:reactor-test")
