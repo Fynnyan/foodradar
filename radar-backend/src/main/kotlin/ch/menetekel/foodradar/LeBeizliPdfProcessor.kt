@@ -54,7 +54,7 @@ class LeBeizliPdfProcessor(pdf: PDDocument) {
             "(?<$id>$startToken(?:(?!(${endTokens.joinToString("|")}))\\X)*)".toRegex(regexOption)
 
         val dateRegex =
-            "(?<day>(MONTAG|DIENSTAG|MITTWOCH|DONNERSTAG|FREITAG|SAMSTAG|SONNTAG)[\\W\\d]*)".toRegex(regexOption)
+            "(?<day>(MONTAG|DIENSTAG|MITTWOCH|DONNERSTAG|FREITAG|SAMSTAG|SONNTAG)[,.\\s\\d]*(JAN|FEB|MÄR|APR|MAI|JUN|JUL|AUG|SEP|OKT|NOV|DEZ)\\w*[,.\\s]*\\d{2,4})".toRegex(regexOption)
         val pastaRegex =
             buildMenuRegex("pasta", pastaToken, listOf(meatToken, vegiToken, fishToken, rohToken))
         val meatRegex =

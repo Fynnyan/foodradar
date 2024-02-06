@@ -2,13 +2,50 @@ package ch.menetekel.foodradar
 
 import ch.menetekel.foodradar.LeBeizliPdfProcessor.Companion.cleanMenuText
 import ch.menetekel.foodradar.LeBeizliPdfProcessor.Companion.trimAndCleanSpaces
+import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.SoftAssertions
 import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.ValueSource
 
 @ExtendWith(SoftAssertionsExtension::class)
 class LeBeizliPdfProcessorTest {
+
+    @ParameterizedTest
+    @ValueSource(
+        strings = [
+            "Dienstag 5.September 2023",
+            "Mittwoch 6.September 2023",
+            "Donnerstag 5.Oktober 2023",
+            "Freitag 16.Juni 2023",
+            "Montag 25.Dezember 2023",
+            "Montag, 25.Dezember 2023",
+            "Montag, 25. Dezember 2023",
+            "Montag 25. Dezember 2023",
+            "MITTWOCH, 2. FEBURAR 2024",
+            "MITTWOCH, 7. FEBRUAR 2024",
+        ]
+    )
+    fun `the date regex correctly captures only the date string`(
+        dateString: String
+    ) {
+        val text =
+            """
+            $dateString
+            CARTE BLANCHE
+            Keine Lust auf lange Entscheidungen am Mittag? 
+            Als Überraschung servieren wir subito ein Hauptgericht. 
+            Wahlweise vegetarisch. Mit diesem Teller wirken wir 
+            der Verschwendung von Lebensmittel entgegen. 
+            """
+                .trimIndent()
+                .lines()
+                .joinToString(" ")
+
+        assertThat(LeBeizliPdfProcessor.dateRegex.find(text)?.value).isEqualTo(dateString)
+    }
 
     @Test
     fun `The lebeizli menu regex return the correct text blocks for the respective menu item`(softly: SoftAssertions) {
