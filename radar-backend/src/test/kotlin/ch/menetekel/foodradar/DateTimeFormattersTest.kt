@@ -35,6 +35,7 @@ class DateTimeFormattersTest {
         "'Montag, 25.Dezember 2023', 2023-12-25",
         "'Montag, 25. Dezember 2023', 2023-12-25",
         "'Montag 25. Dezember 2023', 2023-12-25",
+        "'MITTWOCH, 7. FEBRUAR 2024', 2024-02-07"
     )
     fun `Can parse various dates in the format that the leBeisl uses`(
         dateString: String,
