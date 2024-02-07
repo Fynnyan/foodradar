@@ -11,7 +11,7 @@ interface MenuComponentProps {
 
 export const MenuComponent = (props: MenuComponentProps) => {
     return (
-        <CardContent sx={{padding: "0 20px 0 16px"}}>
+        <CardContent>
             <Typography variant={"body1"}>{props.menu.date}</Typography>
             <ul style={{
                 listStyleType: '"➢ "',

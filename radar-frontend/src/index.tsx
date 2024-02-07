@@ -8,6 +8,15 @@ const darkTheme = createTheme({
     palette: {
         mode: 'dark',
     },
+    components: {
+        MuiCardContent: {
+            styleOverrides: {
+                root: {
+                    padding: "0 16px 0 16px"
+                }
+            }
+        }
+    },
 });
 
 const root = ReactDOM.createRoot(
