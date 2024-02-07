@@ -1,4 +1,4 @@
-import {FoodTruck} from "./Data";
+import {FoodTruck} from "../data/Data";
 import {Box, Card, CardContent, CardHeader, Link, SvgIcon, Typography} from "@mui/material";
 import {ReactComponent as TruckGoneIcon} from '../icons/truck_gone.svg';
 import React from "react";

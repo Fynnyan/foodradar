@@ -17,6 +17,11 @@ export interface Menu {
     courses: Course[],
 }
 
+export function getMenuText(place: String, menu: Menu) {
+    const courses = menu.courses.map((value) => `- ${value.name}`).join("\n")
+    return `${place} - ${menu.date}\n${courses}`
+}
+
 export interface Course {
     name: string;
     price: string;

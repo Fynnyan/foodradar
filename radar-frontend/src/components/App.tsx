@@ -1,11 +1,12 @@
 import React, {useEffect, useState} from 'react';
-import {LoadingPlace, PlaceComponent} from "./PlaceComponent";
-import {FoodTruck, Place} from "./Data";
+import {LoadingPlace, DailyMenuComponent} from "./PlaceComponent";
+import {FoodTruck, Place} from "../data/Data";
 import {AppBar, Box, Container, Link, Toolbar, Typography} from "@mui/material";
 import {FoodTruckComponent} from "./FoodTruckComponent";
 import {GitHub} from "@mui/icons-material";
 import {Spacer} from "./CommonComponents";
 import {AnimatedFoodRadarIcon} from "../icons/AnimatedFoodRadarIcon";
+import {IconLink} from "./common/IconLink";
 
 function App() {
 
@@ -58,15 +59,20 @@ function App() {
                         <AnimatedFoodRadarIcon/>
                         <Typography variant={"h6"}> Food Radar Bern</Typography>
                     </Box>
-                    <Link href={"https://github.com/Fynnyan/foodradar"}><GitHub/></Link>
+                    <IconLink
+                        aria-label={"See the project on Github."}
+                        href={"https://github.com/Fynnyan/foodradar"}
+                    >
+                        <GitHub/>
+                    </IconLink>
                 </Toolbar>
             </AppBar>
             <Spacer/>
-            {drei ? <PlaceComponent place={drei} today={true}/> : <LoadingPlace title={"Dreigänger"}/>}
+            {drei ? <DailyMenuComponent place={drei} /> : <LoadingPlace title={"Dreigänger"}/>}
             <Spacer/>
-            {schicht ? <PlaceComponent place={schicht} today={true}/> : <LoadingPlace title={"Schichtwechsel"}/>}
+            {schicht ? <DailyMenuComponent place={schicht} /> : <LoadingPlace title={"Schichtwechsel"}/>}
             <Spacer/>
-            {beiz ? <PlaceComponent place={beiz} today={true}/> : <LoadingPlace title={"Le-Beizli"}/>}
+            {beiz ? <DailyMenuComponent place={beiz} /> : <LoadingPlace title={"Le-Beizli"}/>}
             <Spacer/>
             {foodTrucks && <FoodTruckComponent foodTrucks={foodTrucks}/>}
         </Container>

@@ -1,9 +1,10 @@
-import {Card, CardContent, CardHeader, Link, Typography} from "@mui/material";
-import {Place, ProcessingStatus} from "./Data";
-import {MenuComponent} from "./MenuComponent";
+import {Card, CardActions, CardContent, CardHeader, Link, Typography} from "@mui/material";
+import {getMenuText, Menu, Place, ProcessingStatus} from "../data/Data";
+import {CopyMenuButton, MenuComponent} from "./MenuComponent";
 import React from "react";
 import LocalDiningIcon from '@mui/icons-material/LocalDining';
 import {RadarSpinner} from "./CommonComponents";
+import {IconLink} from "./common/IconLink";
 
 interface PlaceComponentProps {
     place: Place
@@ -24,8 +25,46 @@ export const PlaceComponent = (props: PlaceComponentProps) => {
             avatar={<Link target="_blank" href={props.place.web} sx={{height: "32px"}}><LocalDiningIcon
                 sx={{fontSize: "32px"}}/></Link>}
         />
-        {menus.map((value, index) => <MenuComponent key={index} menu={value} placeName={props.place.name}/>)}
-        {menus.length === 0 && <InfoBox status={props.place.processingStatus}/>}
+        {menus.map((value, index) => <MenuComponent key={index} menu={value}/>)}
+        {menus.length === 0 && <PlaceStatusInfoBox status={props.place.processingStatus}/>}
+    </Card>
+}
+
+interface DailyMenuComponentProps {
+    place: Place
+}
+
+export const DailyMenuComponent = (props: DailyMenuComponentProps) => {
+
+    const now = new Date()
+    const dateString = now.toISOString().split("T")[0]
+
+    const menu: Menu | null =
+        props.place.menus.filter((it) => it.date === dateString)[0] || null
+
+    return <Card>
+        <CardHeader
+            title={props.place.name}
+            titleTypographyProps={{variant: "h6"}}
+        />
+        {
+            menu != null
+                ? <MenuComponent menu={menu}/>
+                : <PlaceStatusInfoBox status={props.place.processingStatus}/>
+        }
+        <CardActions sx={{gap: "0.5rem"}}>
+            <IconLink
+                aria-label={`See the ${props.place.name} webseite for the daily menu.`}
+                href={props.place.web}
+            >
+                <LocalDiningIcon/>
+            </IconLink>
+            {
+                menu != null && <>
+                    <CopyMenuButton text={getMenuText(props.place.name, menu)}/>
+                </>
+            }
+        </CardActions>
     </Card>
 }
 
@@ -43,7 +82,7 @@ interface InfoBoxProps {
     status: ProcessingStatus
 }
 
-const InfoBox = (props: InfoBoxProps) => {
+export const PlaceStatusInfoBox = (props: InfoBoxProps) => {
     let text = "Unexpected Status"
     switch (props.status) {
         case ProcessingStatus.PROCESSED:
