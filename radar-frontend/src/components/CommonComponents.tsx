@@ -8,8 +8,7 @@ export const Spacer = (props: SpacerProps) =>
     <Box sx={{height: "1rem"}} />
 
 interface RadarSpinnerProps {
-    // ToDo; Make it a component
-    label?: string
+    label?: React.ReactNode
 }
 
 export const RadarSpinner = (props: RadarSpinnerProps) =>
@@ -20,8 +19,7 @@ export const RadarSpinner = (props: RadarSpinnerProps) =>
         padding: "1rem",
         justifyContent: "center"
     }}>
-        {props.label && <Typography variant={"h5"}>{props.label}</Typography>}
-        <Spacer/>
+        {props.label && <>{props.label}<Spacer/></>}
         <RadarSpinnerIcon sx={{
             animationName: `${radarSpin}`,
             animationDuration: "0.8s",

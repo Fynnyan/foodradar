@@ -74,7 +74,7 @@ interface LoadingPlaceProps {
 
 export const LoadingPlace = (props: LoadingPlaceProps) =>
     <Card>
-        <RadarSpinner label={props.title}/>
+        <RadarSpinner label={<Typography variant={"h6"}>{props.title}</Typography>}/>
     </Card>
 
 
