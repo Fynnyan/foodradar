@@ -3,7 +3,7 @@ import {getMenuText, Menu, Place, ProcessingStatus} from "../data/Data";
 import {CopyMenuButton, MenuComponent} from "./MenuComponent";
 import React from "react";
 import LocalDiningIcon from '@mui/icons-material/LocalDining';
-import {RadarSpinner} from "./CommonComponents";
+import {RadarSpinner} from "./common/RadarSpinner";
 import {IconLink} from "./common/IconLink";
 
 interface PlaceComponentProps {

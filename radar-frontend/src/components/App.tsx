@@ -1,10 +1,10 @@
 import React, {useEffect, useState} from 'react';
-import {LoadingPlace, DailyMenuComponent} from "./PlaceComponent";
+import {DailyMenuComponent, LoadingPlace} from "./PlaceComponent";
 import {FoodTruck, Place} from "../data/Data";
-import {AppBar, Box, Container, Link, Toolbar, Typography} from "@mui/material";
+import {AppBar, Box, Container, Toolbar, Typography} from "@mui/material";
 import {FoodTruckComponent} from "./FoodTruckComponent";
 import {GitHub} from "@mui/icons-material";
-import {Spacer} from "./CommonComponents";
+import {Spacer} from "./common/Spacer";
 import {AnimatedFoodRadarIcon} from "../icons/AnimatedFoodRadarIcon";
 import {IconLink} from "./common/IconLink";
 

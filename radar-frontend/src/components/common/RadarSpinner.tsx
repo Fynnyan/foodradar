@@ -1,11 +1,8 @@
-import {Box, keyframes, Typography} from "@mui/material";
+import {Box, keyframes} from "@mui/material";
 import React from "react";
-import {RadarSpinnerIcon} from "../icons/Icons";
+import {RadarSpinnerIcon} from "../../icons/Icons";
+import {Spacer} from "./Spacer";
 
-interface SpacerProps {}
-
-export const Spacer = (props: SpacerProps) =>
-    <Box sx={{height: "1rem"}} />
 
 interface RadarSpinnerProps {
     label?: React.ReactNode
