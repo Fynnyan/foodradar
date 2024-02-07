@@ -9,7 +9,11 @@ interface FoodTruckComponentProps {
 
 export const FoodTruckComponent = (props: FoodTruckComponentProps) => {
     return <Card>
-        <CardHeader title={"Today's Food Trucks"}/>
+        <CardHeader
+            title={"Today's Food Trucks"}
+            titleTypographyProps={{variant: "h6"}}
+            subheader={"Be aware, currently the seasons and holidays are not tracked. Check the website if the truck is present."}
+        />
         <CardContent>
             {props.foodTrucks.map((truck) =>
                 <>
