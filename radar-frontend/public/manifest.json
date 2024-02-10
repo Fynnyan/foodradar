@@ -1,0 +1,17 @@
+{
+  "short_name": "Food Radar",
+  "name": "Food Radar",
+  "description": "Food Radar for the people in the Unic office in Bern.",
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#121212",
+  "background_color": "#121212",
+  "categories": ["food", "lunch"],
+  "icons": [
+    {
+      "src": "favicon.ico",
+      "sizes": "64x64 32x32 24x24 16x16",
+      "type": "image/x-icon"
+    }
+  ]
+}
