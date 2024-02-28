@@ -25,12 +25,9 @@ class LeBeizliPdfProcessor(pdf: PDDocument) {
         if (pasta == null && meat == null && vegi == null) throw Exception("Could not parse the lunch menu, the regex didn't find it.")
 
         return Menu(
-            date = runCatching {
-                LocalDate.parse(
-                    date,
-                    DateTimeFormatters.LE_BEIZLI_DATE
-                )
-            }.getOrThrow(),
+            date = runCatching { LocalDate.parse(date, DateTimeFormatters.LE_BEIZLI_DATE) }
+                .recoverCatching { LocalDate.parse(date, DateTimeFormatters.LE_BEIZLI_ALTERNATIVE_DATE) }
+                .getOrThrow(),
             courses = listOfNotNull(
                 Course(name = pasta ?: "There is no pasta menu or the parser did not find it.", price = null),
                 Course(name = meat ?: "There is no meat menu or the parser did not find it.", price = null),
@@ -54,7 +51,7 @@ class LeBeizliPdfProcessor(pdf: PDDocument) {
             "(?<$id>$startToken(?:(?!(${endTokens.joinToString("|")}))\\X)*)".toRegex(regexOption)
 
         val dateRegex =
-            "(?<day>(MONTAG|DIENSTAG|MITTWOCH|DONNERSTAG|FREITAG|SAMSTAG|SONNTAG)[,.\\s\\d]*(JAN|FEB|MÄR|APR|MAI|JUN|JUL|AUG|SEP|OKT|NOV|DEZ)\\w*[,.\\s]*\\d{2,4})".toRegex(regexOption)
+            "(?<day>(MONTAG|DIENSTAG|MITTWOCH|DONNERSTAG|FREITAG|SAMSTAG|SONNTAG)[,.\\s\\d]*((JAN|FEB|MÄR|APR|MAI|JUN|JUL|AUG|SEP|OKT|NOV|DEZ)\\w*[,.\\s]*\\d{2,4}|\\d{2}[.\\s]*\\d{2}[.\\s]*\\d{2,4}))".toRegex(regexOption)
         val pastaRegex =
             buildMenuRegex("pasta", pastaToken, listOf(meatToken, vegiToken, fishToken, rohToken))
         val meatRegex =

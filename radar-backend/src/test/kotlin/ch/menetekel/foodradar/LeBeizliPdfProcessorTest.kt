@@ -26,6 +26,10 @@ class LeBeizliPdfProcessorTest {
             "Montag 25. Dezember 2023",
             "MITTWOCH, 2. FEBURAR 2024",
             "MITTWOCH, 7. FEBRUAR 2024",
+            "MITTWOCH 28.02.2024",
+            "MITTWOCH 28. 02.24",
+            "MITTWOCH 28 02 24",
+            "MITTWOCH 28.02. 2024",
         ]
     )
     fun `the date regex correctly captures only the date string`(

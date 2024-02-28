@@ -59,6 +59,31 @@ object DateTimeFormatters {
         .appendValue(ChronoField.YEAR, 4)
         .toFormatter()
 
+    val LE_BEIZLI_ALTERNATIVE_DATE = DateTimeFormatterBuilder()
+        .parseCaseInsensitive()
+        .parseLenient()
+        .optionalStart()
+        .appendText(ChronoField.DAY_OF_WEEK, dayOfWeekGerman)
+        .optionalEnd()
+        // can be a space with or without a comma
+        .optionalStart()
+        .appendLiteral(" ")
+        .optionalEnd()
+        .optionalStart()
+        .appendLiteral(", ")
+        .optionalEnd()
+        .appendValue(ChronoField.DAY_OF_MONTH, 1, 2, SignStyle.NOT_NEGATIVE)
+        .appendLiteral(".")
+        .appendValue(ChronoField.MONTH_OF_YEAR, 1, 2, SignStyle.NOT_NEGATIVE)
+        .appendLiteral(".")
+        .optionalStart()
+        .appendValueReduced(ChronoField.YEAR_OF_ERA, 2, 2, 2000)
+        .optionalEnd()
+        .optionalStart()
+        .appendValue(ChronoField.YEAR, 4)
+        .optionalEnd()
+        .toFormatter()
+
     /**
      * expected datete format: Montag, 04.09.2023
      */
