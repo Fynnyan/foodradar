@@ -7,6 +7,7 @@ import {GitHub} from "@mui/icons-material";
 import {Spacer} from "./common/Spacer";
 import {AnimatedFoodRadarIcon} from "../icons/AnimatedFoodRadarIcon";
 import {IconLink} from "./common/IconLink";
+import {RadarQRCode} from "./common/RadarQRCode";
 
 function App() {
 
@@ -59,20 +60,23 @@ function App() {
                         <AnimatedFoodRadarIcon/>
                         <Typography variant={"h6"}> Food Radar Bern</Typography>
                     </Box>
-                    <IconLink
-                        aria-label={"See the project on Github."}
-                        href={"https://github.com/Fynnyan/foodradar"}
-                    >
-                        <GitHub/>
-                    </IconLink>
+                    <Box sx={{display: "flex", flexDirection: "row", alignItems: "center", gap: "0.5rem"}}>
+                        <RadarQRCode/>
+                        <IconLink
+                            aria-label={"See the project on Github."}
+                            href={"https://github.com/Fynnyan/foodradar"}
+                        >
+                            <GitHub/>
+                        </IconLink>
+                    </Box>
                 </Toolbar>
             </AppBar>
             <Spacer/>
-            {drei ? <DailyMenuComponent place={drei} /> : <LoadingPlace title={"Dreigänger"}/>}
+            {drei ? <DailyMenuComponent place={drei}/> : <LoadingPlace title={"Dreigänger"}/>}
             <Spacer/>
-            {schicht ? <DailyMenuComponent place={schicht} /> : <LoadingPlace title={"Schichtwechsel"}/>}
+            {schicht ? <DailyMenuComponent place={schicht}/> : <LoadingPlace title={"Schichtwechsel"}/>}
             <Spacer/>
-            {beiz ? <DailyMenuComponent place={beiz} /> : <LoadingPlace title={"Le-Beizli"}/>}
+            {beiz ? <DailyMenuComponent place={beiz}/> : <LoadingPlace title={"Le-Beizli"}/>}
             <Spacer/>
             {foodTrucks && <FoodTruckComponent foodTrucks={foodTrucks}/>}
         </Container>
