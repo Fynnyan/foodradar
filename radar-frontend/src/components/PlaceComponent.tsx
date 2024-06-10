@@ -5,6 +5,7 @@ import React from "react";
 import LocalDiningIcon from '@mui/icons-material/LocalDining';
 import {RadarSpinner} from "./common/RadarSpinner";
 import {IconLink} from "./common/IconLink";
+import {PlaceMap, Position} from "./common/PlaceMap";
 
 interface PlaceComponentProps {
     place: Place
@@ -32,6 +33,7 @@ export const PlaceComponent = (props: PlaceComponentProps) => {
 
 interface DailyMenuComponentProps {
     place: Place
+    position?: Position
 }
 
 export const DailyMenuComponent = (props: DailyMenuComponentProps) => {
@@ -52,13 +54,14 @@ export const DailyMenuComponent = (props: DailyMenuComponentProps) => {
                 ? <MenuComponent menu={menu}/>
                 : <PlaceStatusInfoBox status={props.place.processingStatus}/>
         }
-        <CardActions sx={{gap: "0.5rem"}}>
+        <CardActions sx={{gap: "0.5rem"}} disableSpacing={true}>
             <IconLink
                 aria-label={`See the ${props.place.name} webseite for the daily menu.`}
                 href={props.place.web}
             >
                 <LocalDiningIcon/>
             </IconLink>
+            <PlaceMap placePosition={props.position} placeName={props.place.name}/>
             {
                 menu != null && <>
                     <CopyMenuButton text={getMenuText(props.place.name, menu)}/>

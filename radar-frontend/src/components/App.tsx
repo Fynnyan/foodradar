@@ -8,6 +8,7 @@ import {Spacer} from "./common/Spacer";
 import {AnimatedFoodRadarIcon} from "../icons/AnimatedFoodRadarIcon";
 import {IconLink} from "./common/IconLink";
 import {RadarQRCode} from "./common/RadarQRCode";
+import {Position} from "./common/PlaceMap";
 
 function App() {
 
@@ -72,11 +73,14 @@ function App() {
                 </Toolbar>
             </AppBar>
             <Spacer/>
-            {drei ? <DailyMenuComponent place={drei}/> : <LoadingPlace title={"Dreigänger"}/>}
+            {drei ? <DailyMenuComponent place={drei} position={new Position(46.9327863, 7.4198107)}/> :
+                <LoadingPlace title={"Dreigänger"}/>}
             <Spacer/>
-            {schicht ? <DailyMenuComponent place={schicht}/> : <LoadingPlace title={"Schichtwechsel"}/>}
+            {schicht ? <DailyMenuComponent place={schicht} position={new Position(46.932644, 7.419432)}/> :
+                <LoadingPlace title={"Schichtwechsel"}/>}
             <Spacer/>
-            {beiz ? <DailyMenuComponent place={beiz}/> : <LoadingPlace title={"Le-Beizli"}/>}
+            {beiz ? <DailyMenuComponent place={beiz} position={new Position(46.9355632, 7.4167862)}/> :
+                <LoadingPlace title={"Le-Beizli"}/>}
             <Spacer/>
             {foodTrucks && <FoodTruckComponent foodTrucks={foodTrucks}/>}
         </Container>
