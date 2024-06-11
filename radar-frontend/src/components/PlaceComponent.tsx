@@ -1,11 +1,11 @@
 import {Card, CardActions, CardContent, CardHeader, Link, Typography} from "@mui/material";
-import {getMenuText, Menu, Place, ProcessingStatus} from "../data/Data";
+import {getMenuText, Menu, Place, Position, ProcessingStatus, Route} from "../data/Data";
 import {CopyMenuButton, MenuComponent} from "./MenuComponent";
 import React from "react";
 import LocalDiningIcon from '@mui/icons-material/LocalDining';
 import {RadarSpinner} from "./common/RadarSpinner";
 import {IconLink} from "./common/IconLink";
-import {PlaceMap, Position} from "./common/PlaceMap";
+import {PlaceMap} from "./common/PlaceMap";
 
 interface PlaceComponentProps {
     place: Place
@@ -34,6 +34,7 @@ export const PlaceComponent = (props: PlaceComponentProps) => {
 interface DailyMenuComponentProps {
     place: Place
     position?: Position
+    routeFromOffice?: Route
 }
 
 export const DailyMenuComponent = (props: DailyMenuComponentProps) => {
@@ -61,7 +62,9 @@ export const DailyMenuComponent = (props: DailyMenuComponentProps) => {
             >
                 <LocalDiningIcon/>
             </IconLink>
-            <PlaceMap placePosition={props.position} placeName={props.place.name}/>
+            <PlaceMap placePosition={props.position}
+                      placeName={props.place.name}
+                      routeFromOffice={props.routeFromOffice}/>
             {
                 menu != null && <>
                     <CopyMenuButton text={getMenuText(props.place.name, menu)}/>

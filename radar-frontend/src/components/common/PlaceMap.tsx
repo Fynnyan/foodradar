@@ -3,12 +3,13 @@ import {Dialog, DialogContent, useMediaQuery, useTheme} from "@mui/material";
 import React, {useState} from "react";
 import {Map} from "@mui/icons-material";
 
-import {MapContainer, Marker, Popup, TileLayer} from "react-leaflet";
-import {LatLng} from "leaflet";
+import {MapContainer, Marker, Polyline, Popup, TileLayer} from "react-leaflet";
+import {Position, Route} from "../../data/Data";
 
 interface PlaceMapProps {
     placePosition?: Position
     placeName?: string
+    routeFromOffice?: Route
 }
 
 export const PlaceMap = (props: PlaceMapProps) => {
@@ -60,24 +61,13 @@ export const PlaceMap = (props: PlaceMapProps) => {
                     {props.placePosition && <Marker position={props.placePosition.toLatLng()}>
                         <Popup>{props.placeName}</Popup>
                     </Marker>}
-
+                    {props.routeFromOffice && <Polyline
+                        pathOptions={{color: 'black'}}
+                        positions={props.routeFromOffice.toLatLangArray()}/>
+                    }
                 </MapContainer>
             </DialogContent>
         </Dialog>
     </>
 }
 
-export class Position {
-    constructor(latitude: number, longitude: number) {
-        this.latitude = latitude;
-        this.longitude = longitude;
-    }
-    // north south
-    readonly latitude: number
-    // west east
-    readonly longitude: number
-
-    toLatLng(): LatLng {
-        return new LatLng(this.latitude, this.longitude, undefined)
-    }
-}

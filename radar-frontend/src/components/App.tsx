@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {DailyMenuComponent, LoadingPlace} from "./PlaceComponent";
-import {FoodTruck, Place} from "../data/Data";
+import {FoodTruck, Place, Position, Route} from "../data/Data";
 import {AppBar, Box, Container, Toolbar, Typography} from "@mui/material";
 import {FoodTruckComponent} from "./FoodTruckComponent";
 import {GitHub} from "@mui/icons-material";
@@ -8,7 +8,7 @@ import {Spacer} from "./common/Spacer";
 import {AnimatedFoodRadarIcon} from "../icons/AnimatedFoodRadarIcon";
 import {IconLink} from "./common/IconLink";
 import {RadarQRCode} from "./common/RadarQRCode";
-import {Position} from "./common/PlaceMap";
+import routes from '../data/routes.json'
 
 function App() {
 
@@ -73,14 +73,26 @@ function App() {
                 </Toolbar>
             </AppBar>
             <Spacer/>
-            {drei ? <DailyMenuComponent place={drei} position={new Position(46.9327863, 7.4198107)}/> :
-                <LoadingPlace title={"Dreigänger"}/>}
+            {drei
+                ? <DailyMenuComponent
+                    place={drei}
+                    position={new Position(routes.dreigaenger.position)}
+                    routeFromOffice={new Route(routes.dreigaenger.route)}/>
+                : <LoadingPlace title={"Dreigänger"}/>}
             <Spacer/>
-            {schicht ? <DailyMenuComponent place={schicht} position={new Position(46.932644, 7.419432)}/> :
-                <LoadingPlace title={"Schichtwechsel"}/>}
+            {schicht
+                ? <DailyMenuComponent
+                    place={schicht}
+                    position={new Position(routes.schichtwechsel.position)}
+                    routeFromOffice={new Route(routes.schichtwechsel.route)}/>
+                : <LoadingPlace title={"Schichtwechsel"}/>}
             <Spacer/>
-            {beiz ? <DailyMenuComponent place={beiz} position={new Position(46.9355632, 7.4167862)}/> :
-                <LoadingPlace title={"Le-Beizli"}/>}
+            {beiz
+                ? <DailyMenuComponent
+                    place={beiz}
+                    position={new Position(routes.beizli.position)}
+                    routeFromOffice={new Route(routes.beizli.route)}/>
+                : <LoadingPlace title={"Le-Beizli"}/>}
             <Spacer/>
             {foodTrucks && <FoodTruckComponent foodTrucks={foodTrucks}/>}
         </Container>
