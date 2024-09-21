@@ -120,7 +120,7 @@ class DataCollectors(
         return try {
 
             val pdf = Loader.loadPDF(URL(pdfLink).readBytes())
-            val menu = LeBeizliPdfProcessor(pdf).getMenu()
+            val menu = LeBeizliPdfProcessorV2(pdf).getMenu()
 
             Place(
                 name = placesConfig.leBeizli.name,

@@ -1,7 +1,7 @@
 package ch.menetekel.foodradar
 
-import ch.menetekel.foodradar.LeBeizliPdfProcessor.Companion.cleanMenuText
 import ch.menetekel.foodradar.LeBeizliPdfProcessor.Companion.trimAndCleanSpaces
+import ch.menetekel.foodradar.LeBeizliPdfProcessorV1.Companion.cleanMenuText
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.SoftAssertions
 import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension
@@ -9,9 +9,10 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.ValueSource
+import java.time.LocalDate
 
 @ExtendWith(SoftAssertionsExtension::class)
-class LeBeizliPdfProcessorTest {
+class LeBeizliPdfProcessorV1Test {
 
     @ParameterizedTest
     @ValueSource(
@@ -48,34 +49,32 @@ class LeBeizliPdfProcessorTest {
                 .lines()
                 .joinToString(" ")
 
-        assertThat(LeBeizliPdfProcessor.dateRegex.find(text)?.value).isEqualTo(dateString)
+        assertThat(LeBeizliPdfProcessorV1.dateRegex.find(text)?.value).isEqualTo(dateString)
     }
 
     @Test
     fun `The lebeizli menu regex return the correct text blocks for the respective menu item`(softly: SoftAssertions) {
 
-        val date = LeBeizliPdfProcessor.dateRegex.find(leBeizliMenu)?.value?.trimAndCleanSpaces()
-        val pasta = LeBeizliPdfProcessor.pastaRegex.find(leBeizliMenu)?.value?.cleanMenuText()
-        val meat = LeBeizliPdfProcessor.meatRegex.find(leBeizliMenu)?.value?.cleanMenuText()
-        val vegi = LeBeizliPdfProcessor.vegiRegex.find(leBeizliMenu)?.value?.cleanMenuText()
+        val date = LeBeizliPdfProcessorV1.dateRegex.find(leBeizliMenu)?.value?.trimAndCleanSpaces()!!
+        val pasta = LeBeizliPdfProcessorV1.pastaRegex.find(leBeizliMenu)?.value?.cleanMenuText()
+        val meat = LeBeizliPdfProcessorV1.meatRegex.find(leBeizliMenu)?.value?.cleanMenuText()
+        val vegi = LeBeizliPdfProcessorV1.vegiRegex.find(leBeizliMenu)?.value?.cleanMenuText()
 
         softly.assertThat(pasta).isEqualTo("Pasta [v] Casarecce | Tomatensauce | Oliven | Kapern | Chili")
         softly.assertThat(meat).isEqualTo("Fleischers Lust Bauernbratwurst | Zwiebelsauce | Ofenkartoffeln | Gemüse")
         softly.assertThat(vegi).isEqualTo("Garten Eden Linseneintopf überbacken mit Ziegenkäse")
 
-        // revisit the formatting another day, currently there is a fallback and "DIENSTAG, 16.01. 23" is just a typo in the text
-        // softly.assertThat(
-        //     LocalDate.parse(
-        //         date,
-        //         DateTimeFormatters.LE_BEIZLI_DATE
-        //     )
-        // ).isEqualTo(LocalDate.of(2023, 1, 16))
+        softly.assertThat(
+            runCatching { LocalDate.parse(date, DateTimeFormatters.LE_BEIZLI_DATE) }
+                .recoverCatching { LocalDate.parse(date, DateTimeFormatters.LE_BEIZLI_ALTERNATIVE_DATE) }
+                .getOrNull(),
+        ).isEqualTo(LocalDate.of(2023, 1, 17))
 
     }
 
     val leBeizliMenu = """
         MITTAGSKARTE
-        DIENSTAG, 16.01. 23
+        DIENSTAG, 17.01.23
         LA FORMULE DU MIDI
         Lust auf ein gemütliches Mittagessen in drei Gängen? 
         Wir servieren eine Vorspeise, einen Hauptgang und 
