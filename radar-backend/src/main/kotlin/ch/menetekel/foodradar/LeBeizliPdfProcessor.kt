@@ -5,13 +5,9 @@ import org.apache.pdfbox.text.PDFTextStripper
 import java.time.LocalDate
 
 
-abstract class LeBeizliPdfProcessor(pdf: PDDocument) {
+abstract class LeBeizliPdfProcessor(private val pdf: PDDocument) {
     private val pdfTextStripper: PDFTextStripper = PDFTextStripper().also { it.sortByPosition = true }
-    protected val text = pdfTextStripper.getText(pdf)
-        .lines()
-        .drop(1)
-        .filter { it.isNotBlank() }
-        .joinToString(" ") { it.trim() }
+    protected val text = pdfTextStripper.getText(pdf).menuTextBlockAsSingleLine()
 
     abstract fun getMenu(): Menu
 
@@ -23,6 +19,11 @@ abstract class LeBeizliPdfProcessor(pdf: PDDocument) {
 
         fun String.trimAndCleanSpaces() =
             this.trim().replace("\\s{2,}".toRegex(), " ")
+
+        fun String.menuTextBlockAsSingleLine() = this
+            .lines()
+            .filter { it.isNotBlank() }
+            .joinToString(" ") { it.trim() }
     }
 }
 
@@ -34,6 +35,7 @@ class LeBeizliPdfProcessorV2(pdf: PDDocument) : LeBeizliPdfProcessor(pdf) {
         val quiche = quicheRegex.find(text)?.value?.cleanMenuText()
         val pasta = pastaRegex.find(text)?.value?.cleanMenuText()
         val dopamin = dopaminRegex.find(text)?.value?.cleanMenuText()
+        val meat = meatRegex.find(text)?.value?.cleanMenuText()
         val vegi = vegiRegex.find(text)?.value?.cleanMenuTextVegi()
 
         if (quiche == null && pasta == null && dopamin == null && vegi == null) throw Exception("Could not parse the lunch menu, the regex didn't find it.")
@@ -44,8 +46,9 @@ class LeBeizliPdfProcessorV2(pdf: PDDocument) : LeBeizliPdfProcessor(pdf) {
             courses = listOfNotNull(
                 Course(name = quiche ?: "There is no quiche menu or the parser did not find it.", price = null),
                 Course(name = pasta ?: "There is no pasta menu or the parser did not find it.", price = null),
-                Course(name = dopamin ?: "There is no meat menu or the parser did not find it.", price = null),
+                Course(name = dopamin ?: "There is no dopamin menu or the parser did not find it.", price = null),
                 Course(name = vegi ?: "There is no vegi menu or the parser did not find it.", price = null),
+                Course(name = meat ?: "There is no meat menu or the parser did not find it.", price = null),
             )
         )
     }
@@ -56,17 +59,20 @@ class LeBeizliPdfProcessorV2(pdf: PDDocument) : LeBeizliPdfProcessor(pdf) {
         const val quicheToken = "quiche"
         const val pastaToken = "pasta"
         const val vegiToken = "garten"
+        const val meatToken = "fleisch"
         const val dopaminToken = "dopaminration"
         const val suessesSection = "SÜSSES"
 
         val quicheRegex =
-            buildMenuRegex("quiche", quicheToken, listOf(pastaToken, vegiToken, dopaminToken, suessesSection))
+            buildMenuRegex("quiche", quicheToken, listOf(meatToken, pastaToken, vegiToken, dopaminToken, suessesSection))
         val pastaRegex =
-            buildMenuRegex("pasta", pastaToken, listOf(quicheToken, vegiToken, dopaminToken, suessesSection))
+            buildMenuRegex("pasta", pastaToken, listOf(meatToken, quicheToken, vegiToken, dopaminToken, suessesSection))
         val dopaminRegex =
-            buildMenuRegex("dopamin", dopaminToken, listOf(pastaToken, vegiToken, quicheToken, suessesSection))
+            buildMenuRegex("dopamin", dopaminToken, listOf(meatToken, pastaToken, vegiToken, quicheToken, suessesSection))
+        val meatRegex =
+            buildMenuRegex("fleisch", meatToken, listOf(dopaminToken, pastaToken, vegiToken, quicheToken, suessesSection))
         val vegiRegex =
-            buildMenuRegex("garten", vegiToken, listOf(quicheToken, pastaToken, dopaminToken, suessesSection))
+            buildMenuRegex("garten", vegiToken, listOf(meatToken, quicheToken, pastaToken, dopaminToken, suessesSection))
         val priceRegex = "(\\+[\\d.]|\\d+[\\s.|]+)".toRegex()
 
         fun String.cleanMenuText() =
