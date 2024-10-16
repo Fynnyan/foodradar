@@ -6,7 +6,7 @@ plugins {
 }
 
 val g = "ch.menetekel"
-val v = "1.4.0"
+val v = "1.4.1"
 
 group = g
 version = v
@@ -37,7 +37,6 @@ val createDockerfile by tasks.creating(Dockerfile::class) {
     group = "docker"
     from("eclipse-temurin:17")
     copyFile("${rootProject.name}-${version}.jar", "/app/food-radar.jar")
-    copyFile("static-files", "/app/static-files")
     entryPoint("java")
     defaultCommand("-jar", "/app/food-radar.jar")
     exposePort(8080)
@@ -45,7 +44,7 @@ val createDockerfile by tasks.creating(Dockerfile::class) {
 
 val buildImage by tasks.creating(DockerBuildImage::class) {
     group = "docker"
-    dependsOn(createDockerfile, "copyJarForBuild", "copyFrontendForBuild")
+    dependsOn(createDockerfile, "copyJarForBuild")
     images.add("food-radar:$version")
     inputDir = file("${project.buildDir}/docker")
     dockerFile = file("${project.buildDir}/docker/Dockerfile")
