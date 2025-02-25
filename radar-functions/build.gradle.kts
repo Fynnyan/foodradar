@@ -8,15 +8,7 @@ val npmStart by tasks.creating(NpmTask::class) {
     args = listOf("run", "start")
 }
 
-val npmBuild by tasks.creating(NpmTask::class) {
-    args = listOf("run", "build")
-}
-
 node {
     download = false
-    version = "22.13.1"
-}
-
-tasks.register("clean", Delete::class.java) {
-    delete = setOf(project.buildDir)
+    version = "20.15.0"
 }
