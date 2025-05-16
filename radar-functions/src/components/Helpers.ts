@@ -34,7 +34,7 @@ export function getDayOfWeek(day: number): string {
         case 3:
             return "WEDNESDAY"
         case 4:
-            return  "THURSDAY"
+            return "THURSDAY"
         case 5:
             return "FRIDAY"
         default:

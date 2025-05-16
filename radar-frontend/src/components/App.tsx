@@ -9,6 +9,8 @@ import {AnimatedFoodRadarIcon} from "../icons/AnimatedFoodRadarIcon";
 import {IconLink} from "./common/IconLink";
 import {RadarQRCode} from "./common/RadarQRCode";
 import routes from '../data/routes.json'
+import {getDayOfWeek} from "../data/Helpers";
+import {getDay} from "date-fns";
 
 function App() {
 
@@ -16,6 +18,7 @@ function App() {
     const [schicht, setSchicht] = useState<Place>()
     const [beiz, setBeiz] = useState<Place>()
     const [foodTrucks, setFoodTrucks] = useState<FoodTruck[]>()
+    const currentDay = getDayOfWeek(getDay(new Date()))
 
     useEffect(() => {
         fetch('/api/place/dreiganger')
@@ -94,7 +97,7 @@ function App() {
                     routeFromOffice={new Route(routes.beizli.route)}/>
                 : <LoadingPlace title={"Le-Beizli"}/>}
             <Spacer/>
-            {foodTrucks && <FoodTruckComponent foodTrucks={foodTrucks}/>}
+            {foodTrucks && <FoodTruckComponent currentDay={currentDay} foodTrucks={foodTrucks}/>}
         </Container>
     );
 }

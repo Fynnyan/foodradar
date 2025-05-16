@@ -30,11 +30,14 @@ export interface Course {
 }
 
 export interface FoodTruck {
-    id: string,
     name: string,
     web: string,
+    locations: FoodTruckLocation[]
+}
+
+export interface FoodTruckLocation {
     location: string,
-    days: string[]
+    day: string
 }
 
 export class Position {
