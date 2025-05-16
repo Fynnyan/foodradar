@@ -29,7 +29,7 @@ export const FoodTruckComponent = (props: FoodTruckComponentProps) => {
 
 const FoodTruckCard = (props: { currentDay: string, truck: FoodTruck }) => {
     const todayLocation =
-        props.truck.locations.find(value => value.day == props.currentDay)
+        props.truck.locations.find(value => value.day === props.currentDay)
     return <>
         <Stack direction={"row"} spacing={2}>
             <Box sx={{flexGrow: 2}}>
