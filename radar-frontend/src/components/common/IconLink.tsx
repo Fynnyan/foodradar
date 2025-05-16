@@ -8,6 +8,7 @@ export const IconLink = (props: LinkProps) => {
     return <Link
         rel="noreferrer"
         target="_blank"
+        {...props}
         sx={{
             // coped the styling props form the MUI Icon Button
             width: "41.5px",
@@ -28,8 +29,8 @@ export const IconLink = (props: LinkProps) => {
                 '@media (hover: none)': {
                     backgroundColor: 'transparent'
                 }
-            }
+            },
+            ...props.sx
         }}
-        {...props}
         >{props.children}</Link>
 }
