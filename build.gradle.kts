@@ -6,7 +6,7 @@ plugins {
 }
 
 val g = "ch.menetekel"
-val v = "1.4.1"
+val v = "1.4.2"
 
 group = g
 version = v
