@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {DailyMenuComponent, LoadingPlace} from "./PlaceComponent";
+import {ClosedPlace, DailyMenuComponent, LoadingPlace} from "./PlaceComponent";
 import {FoodTruck, Place, Position, Route} from "../data/Data";
 import {AppBar, Box, Container, Toolbar, Typography} from "@mui/material";
 import {FoodTruckComponent} from "./FoodTruckComponent";
@@ -38,14 +38,14 @@ function App() {
             .catch(reason => console.log(reason))
     }, [])
 
-    useEffect(() => {
-        fetch('/api/place/le-beizli')
-            .then((response) => response.json() as Promise<Place>)
-            .then((place) => {
-                setBeiz(place)
-            })
-            .catch(reason => console.log(reason))
-    }, [])
+    // useEffect(() => {
+    //     fetch('/api/place/le-beizli')
+    //         .then((response) => response.json() as Promise<Place>)
+    //         .then((place) => {
+    //             setBeiz(place)
+    //         })
+    //         .catch(reason => console.log(reason))
+    // }, [])
 
     useEffect(() => {
         fetch('/api/food-trucks/today')
@@ -90,12 +90,17 @@ function App() {
                     routeFromOffice={new Route(routes.schichtwechsel.route)}/>
                 : <LoadingPlace title={"Schichtwechsel"}/>}
             <Spacer/>
-            {beiz
-                ? <DailyMenuComponent
-                    place={beiz}
-                    position={new Position(routes.beizli.position)}
-                    routeFromOffice={new Route(routes.beizli.route)}/>
-                : <LoadingPlace title={"Le-Beizli"}/>}
+            <ClosedPlace
+                title={"Le-Beizli"}
+                subTitle={"Sommerferien"}
+                text={"Ab Samstag, 5. Juli bis und mit 10. August macht das le beizli Sommerpause."}
+            />
+            {/*{beiz*/}
+            {/*    ? <DailyMenuComponent*/}
+            {/*        place={beiz}*/}
+            {/*        position={new Position(routes.beizli.position)}*/}
+            {/*        routeFromOffice={new Route(routes.beizli.route)}/>*/}
+            {/*    : <LoadingPlace title={"Le-Beizli"}/>}*/}
             <Spacer/>
             {foodTrucks && <FoodTruckComponent currentDay={currentDay} foodTrucks={foodTrucks}/>}
         </Container>

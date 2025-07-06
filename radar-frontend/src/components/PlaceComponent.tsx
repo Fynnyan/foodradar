@@ -1,4 +1,4 @@
-import {Card, CardActions, CardContent, CardHeader, Link, Typography} from "@mui/material";
+import {Box, Card, CardActions, CardContent, CardHeader, Link, Typography} from "@mui/material";
 import {getMenuText, Menu, Place, Position, ProcessingStatus, Route} from "../data/Data";
 import {CopyMenuButton, MenuComponent} from "./MenuComponent";
 import React from "react";
@@ -6,6 +6,8 @@ import LocalDiningIcon from '@mui/icons-material/LocalDining';
 import {RadarSpinner} from "./common/RadarSpinner";
 import {IconLink} from "./common/IconLink";
 import {PlaceMap} from "./common/PlaceMap";
+import {Spacer} from "./common/Spacer";
+import BeachAccessIcon from '@mui/icons-material/BeachAccess';
 
 interface PlaceComponentProps {
     place: Place
@@ -83,6 +85,31 @@ export const LoadingPlace = (props: LoadingPlaceProps) =>
         <RadarSpinner label={<Typography variant={"h6"}>{props.title}</Typography>}/>
     </Card>
 
+interface ClosedPlaceProps {
+    title: string
+    subTitle: string
+    text: string
+}
+
+export const ClosedPlace = (props: ClosedPlaceProps) =>
+    <Card>
+        <Box sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            padding: "1rem",
+            justifyContent: "center"
+        }}>
+            <Typography variant={"h6"}>{props.title}</Typography>
+            <Spacer/>
+            <Box sx={{display: "flex", flexDirection: "row" }}>
+                <BeachAccessIcon/>
+                <Typography variant={"subtitle1"}>{props.subTitle}</Typography>
+                <BeachAccessIcon/>
+            </Box>
+            <Typography>{props.text}</Typography>
+        </Box>
+    </Card>
 
 interface InfoBoxProps {
     status: ProcessingStatus

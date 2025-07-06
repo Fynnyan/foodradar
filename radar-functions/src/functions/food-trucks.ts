@@ -16,12 +16,7 @@ export async function fetchFoodTrucksToday(request: HttpRequest, context: Invoca
         {
             "name": "FireChefs",
             "web": "https://www.firechefs.ch/food-truck",
-            "locations": [
-                {
-                    "location": "Liebefeld Park",
-                    "day": "TUESDAY"
-                }
-            ]
+            "locations": []
         },
         {
             "name": "Gabriele",
