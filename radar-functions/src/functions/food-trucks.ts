@@ -19,17 +19,27 @@ export async function fetchFoodTrucksToday(request: HttpRequest, context: Invoca
             "locations": []
         },
         {
+            "name": "Thaimobil",
+            "web": "https://www.thaimobil.ch/",
+            "locations": [
+                {
+                    "location": "Innenhof VIDMARplus, Liebefeld",
+                    "day": "WEDNESDAY"
+                },
+            ]
+        },
+        {
             "name": "Gabriele",
             "web": "https://www.gabriele-streetfood.ch/",
             "locations": [
-                {
-                    "location": "Liebefeld Bahnhof",
-                    "day": "MONDAY"
-                },
-                {
-                    "location": "Liebefeld Bahnhof",
-                    "day": "WEDNESDAY"
-                }
+                // {
+                //     "location": "Liebefeld Bahnhof",
+                //     "day": "MONDAY"
+                // },
+                // {
+                //     "location": "Liebefeld Bahnhof",
+                //     "day": "WEDNESDAY"
+                // }
             ]
         },
         {
