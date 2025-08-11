@@ -34,7 +34,9 @@ export async function fetchBeizliMenu(request, context) {
                             // 0 point is at the bottom left.
                             .map((i) => [i.transform[5], i.str])
                             // sort by pos, highest first
-                            .sort((a, b) => b[0] - a[0])
+                            // ToDo: remove for the old menu format
+                            // disabled the sorting as the summer menu is printed A4 landscape. So the sorting does not work
+                            //.sort((a, b) => b[0] - a[0])
                             .map(posToText => posToText[1])
                             .reduce((pre, current) => pre + " " + current)
                     )
@@ -44,6 +46,9 @@ export async function fetchBeizliMenu(request, context) {
                         ? formatIsoDate(parse(textDate, 'dd.MM.yyyy', new Date()))
                         : formatIsoDate(new Date()),
                     courses: [
+                        menuText.match(sauvageRegex),
+                        menuText.match(jardiniereRegex),
+                        menuText.match(fraichetteRegex),
                         menuText.match(saladeRegex),
                         menuText.match(vegiRegex),
                         menuText.match(quicheRegex),
@@ -100,6 +105,14 @@ const vegiToken = "garten"
 const meatToken = "fleischer"
 const dopaminToken = "dopaminration"
 const suessesSection = "SÜSSES"
+// special summer menu tokens
+const tellerSection = "teller"
+const sauvageToken = "la sauvage"
+const jardiniereToken = "la jardinière"
+const fraichetteToken = "la fraîchette"
+const sauvageRegex = buildMenuRegex("sauvage", sauvageToken, [jardiniereToken, fraichetteToken, suessesSection, tellerSection])
+const jardiniereRegex = buildMenuRegex("sauvage", jardiniereToken, [sauvageToken, fraichetteToken, suessesSection, tellerSection])
+const fraichetteRegex = buildMenuRegex("sauvage", fraichetteToken, [sauvageToken, jardiniereToken, suessesSection, tellerSection])
 
 const saladeRegex = buildMenuRegex("salade", saladeToken, [quicheToken, meatToken, pastaToken, vegiToken, dopaminToken, suessesSection])
 const quicheRegex = buildMenuRegex("quiche", quicheToken, [meatToken, pastaToken, vegiToken, dopaminToken, suessesSection])
@@ -107,5 +120,5 @@ const pastaRegex = buildMenuRegex("pasta", pastaToken, [meatToken, quicheToken, 
 const dopaminRegex = buildMenuRegex("dopamin", dopaminToken, [meatToken, pastaToken, vegiToken, quicheToken, suessesSection])
 const meatRegex = buildMenuRegex("fleisch", meatToken, [dopaminToken, pastaToken, vegiToken, quicheToken, suessesSection])
 const vegiRegex = buildMenuRegex("garten", vegiToken, [meatToken, quicheToken, pastaToken, dopaminToken, suessesSection])
-const priceRegex = new RegExp("(\\+[\\d.]|\\d+[\\s.|]+)")
+const priceRegex = new RegExp("(\\+[\\d.]|\\d+[\\s.|]*)")
 const dateRegex = new RegExp("\\d{1,2}\\.\\d{1,2}\\.\\d{2,4}", "ig")
