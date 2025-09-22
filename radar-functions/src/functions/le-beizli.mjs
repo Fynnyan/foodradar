@@ -1,7 +1,7 @@
 import {load} from 'cheerio';
 import {app} from "@azure/functions";
 import {getDocument} from "pdfjs-dist/legacy/build/pdf.mjs";
-import {formatISO, parse} from "date-fns";
+import {formatISO, getDay, parse} from "date-fns";
 
 app.http("le-beizli-menu", {
     methods: ["GET"],
@@ -15,8 +15,14 @@ export async function fetchBeizliMenu(request, context) {
     const serviceName = "Le-Beizli"
     const serviceUrl = baseUrl + "/flavours"
     let body
+
+    const currentDay = getDayOfWeek(getDay(new Date()))
+    const openingDays = ["TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY"]
+
     try {
-        const menus = await fetch(serviceUrl)
+        const menus = !openingDays.find((d) => d === currentDay)
+            ? []
+            : await fetch(serviceUrl)
             .then(response => response.text())
             .then(async html => {
                 const $ = load(html);
@@ -95,6 +101,26 @@ function buildMenuRegex(id, startToken, endTokens) {
 
 function cleanMenuText(text) {
     return text.replace(priceRegex, "").trim()
+}
+
+function getDayOfWeek(day) {
+    // follow the date-fs week days, a week starts with sunday, number 0
+    switch (day) {
+        case 0:
+            return "SUNDAY"
+        case 1:
+            return "MONDAY"
+        case 2:
+            return "TUESDAY"
+        case 3:
+            return "WEDNESDAY"
+        case 4:
+            return "THURSDAY"
+        case 5:
+            return "FRIDAY"
+        default:
+            return "SATURDAY"
+    }
 }
 
 // Tokens, beginning of the titles of the different daily menu items
