@@ -70,15 +70,15 @@ jobs:
       - name: Login to Azure
         uses: azure/login@v2
         with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_4D3AE1E93D4049FF9E30AE81EF5E60F0 }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_9CE4DDBF16554149B9D32D6DF2E97B61 }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_5267B4AF3B5C45B7A50B9A1EFD8759C0 }}
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_A288CD16868B42E08E552A418924B9F4 }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_B657B4A2A99D400395896BEAEC086A30 }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_352215E3D0C447C7876FCDD3E26D0C39 }}
 
       - name: 'Run Azure Functions Action'
         uses: Azure/functions-action@v1
         id: fa
         with:
-          app-name: 'food-radar-functions'
+          app-name: 'food-radar-function'
           slot-name: 'Production'
           package: '.'
           
