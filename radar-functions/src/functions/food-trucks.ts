@@ -22,10 +22,10 @@ export async function fetchFoodTrucksToday(request: HttpRequest, context: Invoca
             "name": "Thaimobil",
             "web": "https://www.thaimobil.ch/",
             "locations": [
-                {
-                    "location": "Innenhof VIDMARplus, Liebefeld",
-                    "day": "WEDNESDAY"
-                },
+                // {
+                //     "location": "Innenhof VIDMARplus, Liebefeld",
+                //     "day": "WEDNESDAY"
+                // },
             ]
         },
         {
@@ -46,18 +46,18 @@ export async function fetchFoodTrucksToday(request: HttpRequest, context: Invoca
             "name": "Mê - vietnamese cuisine",
             "web": "https://mevietnam.ch/",
             "locations": [
-                {
-                    "location": "Liebefeld Bahnhof",
-                    "day": "TUESDAY"
-                },
-                {
-                    "location": "Liebefeld Bahnhof",
-                    "day": "THURSDAY"
-                },
-                {
-                    "location": "Innenhof VIDMARplus, Liebefeld",
-                    "day": "FRIDAY"
-                },
+                // {
+                //     "location": "Liebefeld Bahnhof",
+                //     "day": "TUESDAY"
+                // },
+                // {
+                //     "location": "Liebefeld Bahnhof",
+                //     "day": "THURSDAY"
+                // },
+                // {
+                //     "location": "Innenhof VIDMARplus, Liebefeld",
+                //     "day": "FRIDAY"
+                // },
             ]
         }
         ]
