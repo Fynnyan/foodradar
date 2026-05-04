@@ -19,23 +19,33 @@ export async function fetchFoodTrucksToday(request: HttpRequest, context: Invoca
             "locations": []
         },
         {
+            "name": "DogQueens",
+            "web": "https://dogqueens.ch",
+            "locations": [
+                {
+                    "location": "Innenhof VIDMARplus, Liebefeld",
+                    "day": "TUESDAY"
+                }
+            ]
+        },
+        {
             "name": "Thaimobil",
             "web": "https://www.thaimobil.ch/",
             "locations": [
-                // {
-                //     "location": "Innenhof VIDMARplus, Liebefeld",
-                //     "day": "WEDNESDAY"
-                // },
+                {
+                    "location": "Innenhof VIDMARplus, Liebefeld",
+                    "day": "WEDNESDAY"
+                }
             ]
         },
         {
             "name": "Gabriele",
-            "web": "https://www.gabriele-streetfood.ch/",
+            "web": "https://www.gabriele-streetfood.ch",
             "locations": [
-                // {
-                //     "location": "Liebefeld Bahnhof",
-                //     "day": "MONDAY"
-                // },
+                {
+                    "location": "Liebefeld Bahnhof",
+                    "day": "MONDAY"
+                }
                 // {
                 //     "location": "Liebefeld Bahnhof",
                 //     "day": "WEDNESDAY"
@@ -43,24 +53,34 @@ export async function fetchFoodTrucksToday(request: HttpRequest, context: Invoca
             ]
         },
         {
-            "name": "Mê - vietnamese cuisine",
-            "web": "https://mevietnam.ch/",
+            "name": "Provecho Wey!",
+            "web": "https://www.instagram.com/provecho_wey",
             "locations": [
-                // {
-                //     "location": "Liebefeld Bahnhof",
-                //     "day": "TUESDAY"
-                // },
-                // {
-                //     "location": "Liebefeld Bahnhof",
-                //     "day": "THURSDAY"
-                // },
-                // {
-                //     "location": "Innenhof VIDMARplus, Liebefeld",
-                //     "day": "FRIDAY"
-                // },
+                {
+                    "location": "Innenhof VIDMARplus, Liebefeld",
+                    "day": "THURSDAY"
+                }
+            ]
+        },
+        {
+            "name": "Mê - vietnamese cuisine",
+            "web": "https://mevietnam.ch",
+            "locations": [
+                {
+                    "location": "Liebefeld Bahnhof",
+                    "day": "TUESDAY"
+                },
+                {
+                    "location": "Liebefeld Bahnhof",
+                    "day": "THURSDAY"
+                },
+                {
+                    "location": "Innenhof VIDMARplus, Liebefeld",
+                    "day": "FRIDAY"
+                }
             ]
         }
-        ]
+    ]
 
     const currentDay = getDayOfWeek(getDay(new Date()))
     const foodTruckDays = (truck: FoodTruck): string[] => truck.locations.map(value => value.day)
