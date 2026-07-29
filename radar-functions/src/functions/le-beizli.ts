@@ -2,7 +2,7 @@ import {app, HttpRequest, HttpResponseInit, InvocationContext} from "@azure/func
 import {PDFParse} from 'pdf-parse';
 import {formatISO, getDay, parse} from "date-fns";
 import {load} from "cheerio";
-import {getDayOfWeek} from "../components/Helpers";
+import {getDayOfWeek, isCurrentDateInHoliday} from "../components/Helpers";
 import {Course, Menu, Place, ProcessingStatus} from "../components/Types";
 
 
@@ -22,6 +22,21 @@ export async function fetchBeizlV2Menu(request: HttpRequest, context: Invocation
 
     const currentDay = getDayOfWeek(getDay(new Date()))
     const openingDays = ["TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY"]
+
+    const startHoliday = new Date(2026, 6, 20)
+    const endHoliday = new Date(2026, 7, 9)
+
+    if (isCurrentDateInHoliday(startHoliday, endHoliday)) {
+        return {
+            status: 200,
+            jsonBody: {
+                name: serviceName,
+                web: serviceUrl,
+                menus: [],
+                processingStatus: ProcessingStatus.PROCESSED
+            }
+        }
+    }
 
     try {
         const menus: Menu[] = !openingDays.find((d) => d === currentDay)

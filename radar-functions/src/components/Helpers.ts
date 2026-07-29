@@ -1,4 +1,4 @@
-import {addDays, formatISO, getDay} from "date-fns";
+import {addDays, endOfDay, formatISO, getDay, isWithinInterval, startOfDay} from "date-fns";
 
 export function formatIsoDate(date: Date): string {
     return formatISO(date, {representation: 'date'})
@@ -47,4 +47,11 @@ export function getDateRelativeOfWeekdayForCurrentWeek(dayOfWeek: number): Date 
     const currentDay = getDay(now)
     const op = dayOfWeek - currentDay
     return addDays(now, op)
+}
+
+export function isCurrentDateInHoliday(start: Date, end: Date, now: Date = new Date()): boolean {
+    return isWithinInterval(now, {
+        start: startOfDay(start),
+        end: endOfDay(end),
+    });
 }
